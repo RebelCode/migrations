@@ -1,0 +1,31 @@
+{
+    "name": "rebelcode/migrations",
+    "description": "Simple database migration library.",
+    "type": "library",
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "RebelCode",
+            "email": "dev@rebelcode.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": "^5.5.9 | ^7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8",
+        "ptrofimov/xpmock": "^1.1",
+        "dhii/php-cs-fixer-config": "^0.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rebelcode\\Migrations\\": "src"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "csfix": "php-cs-fixer fix -vvv"
+    }
+}

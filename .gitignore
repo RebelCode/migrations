@@ -1,0 +1,10 @@
+/vendor/
+/nbproject/private/
+/test/coverage/
+/test/log/
+/build/
+/.idea/dictionaries/
+/.idea/workspace.xml
+/.idea/deployment.xml
+/.idea/tasks.xml
+/.idea/vagrant.xml
