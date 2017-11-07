@@ -164,8 +164,19 @@ abstract class AbstractMigrator extends ByjgMigration
      * {@inheritdoc}
      *
      * Overridden to contain a portion of the fix for the SQL file execution bug. See {@link getMigrationSqlQuery()}.
-     * This method now properly checks if a version lies in a sequence between the current version
-     * and the version to migrate to, including/excluding the current version depending on the increment.
+     * This method now properly checks if migration can be done from the current version to another version,
+     * including/excluding the current version depending on the increment.
+     *
+     * This is achieved by calculating the difference between the versions and multiplying by the increment. This result
+     * is called "delta", and it allows the detection of a discrepancy between the given versions and the sign of the
+     * increment by swapping the sign of the difference. If delta is zero or smaller, then the given versions and the
+     * increment are not consistent.
+     *
+     * Example:
+     * 1. If the up version is greater than the current version, the increment should be positive, their difference will
+     *    be positive and so delta will be positive.
+     * 2. If the up version is smaller than the current version, the increment should be negative, their difference will
+     *    be negative and so delta will be positive.
      *
      * @since [*next-version*]
      */
@@ -173,10 +184,6 @@ abstract class AbstractMigrator extends ByjgMigration
     {
         // Difference between versions
         $delta = (intval($upVersion) - intval($currentVersion)) * $increment;
-
-        if ($increment < 0) {
-            return ($delta > 0);
-        }
 
         return ($delta > 0 || $upVersion === null);
     }
