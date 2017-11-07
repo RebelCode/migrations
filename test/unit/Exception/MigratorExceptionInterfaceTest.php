@@ -1,6 +1,6 @@
 <?php
 
-namespace RebelCode\Migrations\UnitTest;
+namespace RebelCode\Migrations\Exception\UnitTest;
 
 use Xpmock\TestCase;
 use RebelCode\Migrations\Exception\MigratorExceptionInterface as TestSubject;
