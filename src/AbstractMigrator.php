@@ -11,7 +11,7 @@ use InvalidArgumentException;
 use RebelCode\Migrations\Exception\CouldNotMigrateExceptionInterface;
 
 /**
- * Abstract functionality for migrations
+ * Abstract functionality for migrations.
  *
  * @since [*next-version*]
  */
@@ -185,7 +185,7 @@ abstract class AbstractMigrator extends ByjgMigration
         // Difference between versions
         $delta = (intval($upVersion) - intval($currentVersion)) * $increment;
 
-        return ($delta > 0 || $upVersion === null);
+        return $delta > 0 || $upVersion === null;
     }
 
     /**
@@ -314,7 +314,7 @@ abstract class AbstractMigrator extends ByjgMigration
      *
      * @since [*next-version*]
      *
-     * @param String|stringable|float|int $value The value to normalize.
+     * @param string|Stringable|float|int $value The value to normalize.
      *
      * @throws InvalidArgumentException If value cannot be normalized.
      *

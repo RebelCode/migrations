@@ -46,7 +46,6 @@ abstract class AbstractDatabase extends ByjgAbstractDatabase
     const PLACEHOLDER_LOG_STATUS_COLUMN = '{lt_status}';
 
     /**
-     *
      * Formats a query string.
      *
      * @since [*next-version*]

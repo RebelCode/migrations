@@ -34,14 +34,14 @@ class MySqlFormatMigrator extends AbstractMigrator implements MigratorInterface
      */
     use StringTranslatingTrait;
 
-    /**
+    /*
      * Provides integer normalization functionality.
      *
      * @since [*next-version*]
      */
     use NormalizeIntCapableTrait;
 
-    /**
+    /*
      * Provides string normalization functionality.
      *
      * @since [*next-version*]
