@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "52124fd32dbe7d876d8e1107344e9058",
+    "content-hash": "21f3aeb7f9a21e2a6c206113ab518300",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.36.36",
+            "version": "3.36.37",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "26ed9d51a11ca88ce919d7b0884b4b47232997b4"
+                "reference": "a6d7fd9f32c63d018a6603a36174b4cb971fccd9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/26ed9d51a11ca88ce919d7b0884b4b47232997b4",
-                "reference": "26ed9d51a11ca88ce919d7b0884b4b47232997b4",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/a6d7fd9f32c63d018a6603a36174b4cb971fccd9",
+                "reference": "a6d7fd9f32c63d018a6603a36174b4cb971fccd9",
                 "shasum": ""
             },
             "require": {
@@ -84,7 +84,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2017-11-02T23:56:51+00:00"
+            "time": "2017-11-03T16:39:35+00:00"
         },
         {
             "name": "byjg/anydataset",
@@ -590,6 +590,49 @@
             ],
             "description": "Interfaces for internationalization.",
             "time": "2017-03-13T12:08:29+00:00"
+        },
+        {
+            "name": "dhii/normalization-helper-base",
+            "version": "dev-task/initial-classes",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Dhii/normalization-helper-base.git",
+                "reference": "1118a16eafea9bd43d0e597415a04e7efa6fbed3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Dhii/normalization-helper-base/zipball/1118a16eafea9bd43d0e597415a04e7efa6fbed3",
+                "reference": "1118a16eafea9bd43d0e597415a04e7efa6fbed3",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.4 | ^7.0"
+            },
+            "require-dev": {
+                "codeclimate/php-test-reporter": "<=0.3.2",
+                "dhii/php-cs-fixer-config": "^0.1",
+                "dhii/stringable-interface": "^0.1",
+                "phpunit/phpunit": "^4.8",
+                "ptrofimov/xpmock": "^1.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Dhii\\Util\\Normalization\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dhii Team",
+                    "email": "development@dhii.co"
+                }
+            ],
+            "description": "Functionality for normalizing values.",
+            "time": "2017-10-27T10:50:14+00:00"
         },
         {
             "name": "dhii/stringable-interface",
@@ -2736,7 +2779,8 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "dhii/exception-helper-base": 20,
-        "dhii/i18n-helper-base": 20
+        "dhii/i18n-helper-base": 20,
+        "dhii/normalization-helper-base": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
