@@ -10,8 +10,11 @@ use Dhii\Util\Normalization\NormalizeIntCapableTrait;
 use Dhii\Util\Normalization\NormalizeStringCapableTrait;
 use Dhii\Util\String\StringableInterface as Stringable;
 use Exception as RootException;
+use Psr\Http\Message\UriInterface;
 use RebelCode\Migrations\Exception\CouldNotMigrateException;
 use RebelCode\Migrations\Exception\CouldNotMigrateExceptionInterface;
+use RebelCode\Migrations\Exception\MigratorException;
+use RebelCode\Migrations\Exception\MigratorExceptionInterface;
 
 /**
  * An SQL migrator that allows formatting of SQL queries via placeholder replacement.
@@ -70,14 +73,23 @@ class MySqlFormatMigrator extends AbstractMigrator implements MigratorInterface
      *
      * @since [*next-version*]
      *
-     * @param Uri               $uri        The database URI.
+     * @param UriInterface      $uri        The database URI.
      * @param DatabaseInterface $db         The database adapter.
      * @param string            $baseDir    The base directory, where the migrations directory and base SQLk are found.
      * @param array             $formatters The formatters, as an associative array of callbacks.
      */
-    public function __construct(Uri $uri, DatabaseInterface $db, $baseDir, $formatters = [])
+    public function __construct(UriInterface $uri, DatabaseInterface $db, $baseDir, $formatters = [])
     {
-        parent::__construct($uri, $baseDir);
+        $this->uri     = $uri;
+        $this->_folder = $baseDir;
+
+        if (!file_exists($this->_folder . '/base.sql')) {
+            throw $this->_createMigratorException(
+                $this->__('Migration script "%s/base.sql" not found', [$this->_folder]),
+                null,
+                null
+            );
+        }
 
         $this->_dbCommand = $db;
         $this->formatters = $formatters;
@@ -183,5 +195,24 @@ class MySqlFormatMigrator extends AbstractMigrator implements MigratorInterface
         $version = null
     ) {
         return new CouldNotMigrateException($message, $code, $previous, $this, $version);
+    }
+
+    /**
+     * Creates a new migrator exception instance.
+     *
+     * @since [*next-version*]
+     *
+     * @param string|Stringable|null $message  The error message, if any.
+     * @param int|null               $code     The error code, if any.
+     * @param RootException|null     $previous The inner exception for chaining, if any.
+     *
+     * @return MigratorExceptionInterface The created exception.
+     */
+    protected function _createMigratorException(
+        $message = null,
+        $code = null,
+        RootException $previous = null
+    ) {
+        return new MigratorException($message, $code, $previous, $this);
     }
 }
