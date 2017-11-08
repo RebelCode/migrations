@@ -240,7 +240,7 @@ abstract class AbstractMigrator extends ByjgMigration
         $count   = count($files);
 
         if ($count > 1) {
-            $this->_createCouldNotMigrateException(
+            throw $this->_createCouldNotMigrateException(
                 $this->__('Found multiple migration files with the same version number'),
                 null,
                 null,
