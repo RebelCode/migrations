@@ -372,4 +372,28 @@ class AbstractMigratorTest extends TestCase
         // Version and increment do not matter
         $this->assertNull($reflect->getMigrationSql(null, null), 'Expected null.');
     }
+
+    /**
+     * Tests the migration SQL query getter to assert whether it correctly reads the SQL contents of a file.
+     *
+     * @since [*next-version*]
+     */
+    public function testGetMigrationSqlQuery()
+    {
+        $subject    = $this->createInstance(['getMigrationSql']);
+        $reflect    = $this->reflect($subject);
+        $fileSystem = $this->createFileSystem(
+            [
+                'sql' => [
+                    'file.sql' => $expected = uniqid('sql-'),
+                ],
+            ]
+        );
+
+        $subject->method('getMigrationSql')->willReturn($fileSystem->url() . '/sql/file.sql');
+
+        $result = $reflect->_getMigrationSqlQuery(null, null);
+
+        $this->assertEquals($expected, $result, 'Retrieved and expected contents are not the same.');
+    }
 }
