@@ -139,7 +139,7 @@ abstract class AbstractMigrator extends ByjgMigration
         while (
             $this->canContinue($currentVersion, $upVersion, $increment)
             &&
-            $rawSql = $this->getMigrationSqlQuery($currentVersion, $increment)
+            $rawSql = $this->_getMigrationSqlQuery($currentVersion, $increment)
         ) {
             $nextVersion = $currentVersion + $increment;
 
@@ -202,19 +202,19 @@ abstract class AbstractMigrator extends ByjgMigration
      *
      * @since [*next-version*]
      *
-     * @param int $version   The version.
-     * @param int $increment The increment.
+     * @param int $currVersion The current version.
+     * @param int $increment   The migration increment.
      *
      * @return null|string The SQL, or null if no SQL was found for the given version.
      */
-    protected function getMigrationSqlQuery($version, $increment)
+    protected function _getMigrationSqlQuery($currVersion, $increment)
     {
-        $version = $this->_normalizeInt($version);
-        $fileNum = ($increment >= 0)
-            ? $version + 1
-            : $version;
+        $currVersion = $this->_normalizeInt($currVersion);
+        $fileNumber  = ($increment >= 0)
+            ? $currVersion + 1
+            : $currVersion;
 
-        $file = $this->getMigrationSql($fileNum, $increment);
+        $file = $this->getMigrationSql($fileNumber, $increment);
 
         return file_exists($file) && is_readable($file)
             ? file_get_contents($file)
