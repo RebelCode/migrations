@@ -23,6 +23,7 @@
         "phpunit/phpunit": "^4.8",
         "ptrofimov/xpmock": "^1.1",
         "dhii/php-cs-fixer-config": "^0.1",
+        "mikey179/vfsStream": "^1.6.5",
         "dhii/stringable-interface": "^0.1"
     },
     "autoload": {
