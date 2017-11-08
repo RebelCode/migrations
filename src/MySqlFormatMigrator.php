@@ -132,7 +132,7 @@ class MySqlFormatMigrator extends AbstractMigrator implements MigratorInterface
     {
         foreach ($this->formatters as $_key => $_formatter) {
             $_search  = sprintf('{%s}', $_key);
-            $_replace = call_user_func_array($_formatter, [$sql, $_search]);
+            $_replace = call_user_func_array($_formatter, [$this, $sql, $_search]);
 
             $sql = str_replace($_search, $_replace, $sql);
         }
