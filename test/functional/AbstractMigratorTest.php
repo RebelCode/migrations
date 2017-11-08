@@ -1,16 +1,14 @@
 <?php
 
-namespace RebelCode\Migrations\UnitTest;
+namespace RebelCode\Migrations\FuncTest;
 
-use Exception;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit_Framework_MockObject_MockObject;
 use Xpmock\TestCase;
-use RebelCode\Migrations\AbstractMigrator as TestSubject;
 
 /**
- * Tests {@see TestSubject}.
+ * Tests {@see RebelCode\Migrations\AbstractMigrator}.
  *
  * @since [*next-version*]
  */
