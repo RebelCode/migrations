@@ -272,9 +272,9 @@ abstract class AbstractMigrator extends ByjgMigration
 
         $patterns = $this->_getMigrationFilePatterns($direction);
 
-        foreach ($patterns as $_pattern) {
-            $_glob   = sprintf($_pattern, $version);
-            $_files  = glob($_glob);
+        foreach ($patterns as $_dir => $_pattern) {
+            $_regex  = sprintf($_pattern, $version);
+            $_files  = $this->_getMatchingFiles($_dir, $_regex);
             $results = array_merge($results, $_files);
         }
 
@@ -282,16 +282,51 @@ abstract class AbstractMigrator extends ByjgMigration
     }
 
     /**
-     * Retrieves the glob-style patterns for finding migration files.
+     * Retrieves the path of all files in a directory that match a given regex pattern.
      *
-     * The file name portion of each pattern may contain a printf-style placeholder, which will be interpolated into
-     * the migration version number.
+     * @since [*next-version*]
+     *
+     * @param string $directory
+     * @param        $regex
+     *
+     * @return array
+     */
+    protected function _getMatchingFiles($directory, $regex)
+    {
+        $directory = $this->_normalizeString($directory);
+        $regex     = $this->_normalizeString($regex);
+
+        if (!is_dir($directory)) {
+            return [];
+        }
+
+        $files  = [];
+        $handle = opendir($directory);
+
+        if ($handle) {
+            while (($_file = readdir($handle)) !== false) {
+                if (preg_match($regex, $_file)) {
+                    $files[] = $_file;
+                }
+            }
+        }
+
+        closedir($handle);
+
+        return $files;
+    }
+
+    /**
+     * Retrieves the regex patterns for finding migration files for a specific direction.
+     *
+     * Regex patterns must contain a "%d" at the string location where the migration version is found.
+     * This will be interpolated into the version number of the migration.
      *
      * @since [*next-version*]
      *
      * @param string|Stringable|null $direction The direction of the migration. See the MIGRATION_DIRECTION_* constants.
      *
-     * @return string[] Glob-style patterns for the absolute path where migration files are found.
+     * @return string[] An array of file name matching regex strings, mapped to directory strings.
      */
     abstract protected function _getMigrationFilePatterns($direction = null);
 
@@ -321,6 +356,22 @@ abstract class AbstractMigrator extends ByjgMigration
      * @return int The normalized value.
      */
     abstract protected function _normalizeInt($value);
+
+    /**
+     * Normalizes a value to its string representation.
+     *
+     * The values that can be normalized are any scalar values, as well as
+     * {@see StringableInterface).
+     *
+     * @since [*next-version*]
+     *
+     * @param Stringable|string|int|float|bool $subject The value to normalize to string.
+     *
+     * @throws InvalidArgumentException If the value cannot be normalized.
+     *
+     * @return string The string that resulted from normalization.
+     */
+    abstract protected function _normalizeString($subject);
 
     /**
      * Creates a new "could not migrate" exception instance.
