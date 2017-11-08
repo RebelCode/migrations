@@ -311,4 +311,65 @@ class AbstractMigratorTest extends TestCase
         $this->assertCount(1, $files, 'Resulting file list contains more than one entry.');
         $this->assertContains('down-3.sql', $files, 'The expected file is not in the resulting file list.');
     }
+
+    /**
+     * Tests the migration SQL file getter method to assert whether it correctly retrieves the single SQL file.
+     *
+     * @since [*next-version*]
+     */
+    public function testGetMigrationSql()
+    {
+        $subject = $this->createInstance(['_getMigrationFiles']);
+        $reflect = $this->reflect($subject);
+        $file    = uniqid('file-');
+
+        $subject->method('_getMigrationFiles')
+                ->willReturn([$file]);
+
+        $this->assertEquals(
+            $file,
+            // Version and increment do not matter
+            $reflect->getMigrationSql(null, null),
+            'Expected and retrieved migration file are not the same.'
+        );
+    }
+
+    /**
+     * Tests the migration SQL file getter method to assert whether it correctly throws when multiple SQL files are
+     * found.
+     *
+     * @since [*next-version*]
+     */
+    public function testGetMigrationSqlMultipleFiles()
+    {
+        $subject = $this->createInstance(['_getMigrationFiles']);
+        $reflect = $this->reflect($subject);
+        $file1   = uniqid('file-');
+        $file2   = uniqid('file-');
+
+        $subject->method('_getMigrationFiles')
+                ->willReturn([$file1, $file2]);
+
+        $this->setExpectedException('Exception');
+
+        // Version and increment do not matter
+        $reflect->_getMigrationSql(null, null);
+    }
+
+    /**
+     * Tests the migration SQL file getter method to assert whether it correctly returns null when no file was found.
+     *
+     * @since [*next-version*]
+     */
+    public function testGetMigrationSqlNoFile()
+    {
+        $subject = $this->createInstance(['_getMigrationFiles']);
+        $reflect = $this->reflect($subject);
+
+        $subject->method('_getMigrationFiles')
+                ->willReturn([]);
+
+        // Version and increment do not matter
+        $this->assertNull($reflect->getMigrationSql(null, null), 'Expected null.');
+    }
 }
