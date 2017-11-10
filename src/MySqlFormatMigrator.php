@@ -83,14 +83,6 @@ class MySqlFormatMigrator extends AbstractMigrator implements MigratorInterface
         $this->uri     = $uri;
         $this->_folder = $baseDir;
 
-        if (!file_exists($this->_folder . '/base.sql')) {
-            throw $this->_createMigratorException(
-                $this->__('Migration script "%s/base.sql" not found', [$this->_folder]),
-                null,
-                null
-            );
-        }
-
         $this->_dbCommand = $db;
         $this->formatters = $formatters;
     }
