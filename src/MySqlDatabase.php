@@ -229,6 +229,10 @@ class MySqlDatabase extends AbstractDatabase
     public function createVersion()
     {
         $this->executeSql(
+            $this->_formatSql('DROP TABLE IF EXISTS {lt}')
+        );
+
+        $this->executeSql(
             $this->_formatSql('CREATE TABLE IF NOT EXISTS {lt} ({lt_version} int, {lt_status} varchar(20))')
         );
 
