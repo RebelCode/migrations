@@ -58,7 +58,7 @@ abstract class AbstractDatabase extends ByjgAbstractDatabase
     {
         $sql = $this->_normalizeString($sql);
         $sql = str_replace(static::PLACEHOLDER_DATABASE, $this->_getDatabaseName(), $sql);
-        $sql = str_replace(static::PLACEHOLDER_LOG_TABLE, $this->_getLogTable(), $sql);
+        $sql = str_replace(static::PLACEHOLDER_LOG_TABLE, $this->_getLogTableName(), $sql);
         $sql = str_replace(static::PLACEHOLDER_LOG_VERSION_COLUMN, $this->_getLogTableVersionColumn(), $sql);
         $sql = str_replace(static::PLACEHOLDER_LOG_STATUS_COLUMN, $this->_getLogTableStatusColumn(), $sql);
 
@@ -158,7 +158,7 @@ abstract class AbstractDatabase extends ByjgAbstractDatabase
      *
      * @return string The name of the version table.
      */
-    abstract protected function _getLogTable();
+    abstract protected function _getLogTableName();
 
     /**
      * Retrieves the name of the version column in the version log table.

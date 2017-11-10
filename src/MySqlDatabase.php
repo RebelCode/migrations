@@ -109,7 +109,7 @@ class MySqlDatabase extends AbstractDatabase
      *
      * @return Stringable|string The name of the version table.
      */
-    protected function _getLogTable()
+    protected function _getLogTableName()
     {
         return $this->logTable;
     }
