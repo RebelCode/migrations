@@ -87,6 +87,8 @@ abstract class AbstractMigrator extends ByjgMigration
             try {
                 $versionInfo    = $this->getCurrentVersion();
                 $currentVersion = intval($versionInfo['version']);
+
+                $this->down(0);
             } catch (DatabaseNotVersionedException $versionedException) {
                 $currentVersion = 0;
             }
@@ -95,11 +97,9 @@ abstract class AbstractMigrator extends ByjgMigration
                 call_user_func_array($this->_callableProgress, ['reset', $currentVersion, 0]);
             }
 
-            $this->getDbCommand()->dropDatabase();
-            $this->getDbCommand()->createDatabase();
-            $this->getDbCommand()->createVersion();
-            $this->getDbCommand()->executeSql(file_get_contents($this->getBaseSql()));
-            $this->getDbCommand()->setVersion(0, 'complete');
+            $db = $this->getDbCommand();
+            $db->createVersion();
+            $db->setVersion(0, 'complete');
         } catch (RootException $exception) {
             throw $this->_createCouldNotMigrateException(
                 $this->__('Failed to reset'),
