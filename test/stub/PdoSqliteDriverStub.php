@@ -1,6 +1,6 @@
 <?php
 
-namespace RebelCode\Migrations\Stub;
+namespace RebelCode\Migrations\TestStub;
 
 use ByJG\AnyDataset\DbDriverInterface;
 use ByJG\AnyDataset\Store\DbPdoDriver;

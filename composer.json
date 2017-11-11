@@ -31,6 +31,11 @@
             "RebelCode\\Migrations\\": "src"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "RebelCode\\Migrations\\TestStub\\": "test/stub"
+        }
+    },
     "scripts": {
         "test": "phpunit",
         "csfix": "php-cs-fixer fix -vvv"
