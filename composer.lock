@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "eac1e6749249fbebca02162eff63fd54",
+    "content-hash": "3ba7fae7a83ba7e3267fc1a74ce33d9f",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.37.1",
+            "version": "3.38.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "f3166fbdf14cea6898729dd945eaabdd211abe8f"
+                "reference": "65bc3aec387a2cfb997ec60bce3febdac8b30701"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/f3166fbdf14cea6898729dd945eaabdd211abe8f",
-                "reference": "f3166fbdf14cea6898729dd945eaabdd211abe8f",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/65bc3aec387a2cfb997ec60bce3febdac8b30701",
+                "reference": "65bc3aec387a2cfb997ec60bce3febdac8b30701",
                 "shasum": ""
             },
             "require": {
@@ -84,7 +84,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2017-11-07T20:32:15+00:00"
+            "time": "2017-11-08T23:17:54+00:00"
         },
         {
             "name": "byjg/anydataset",
@@ -1674,6 +1674,61 @@
                 "stub"
             ],
             "time": "2017-09-04T11:05:03+00:00"
+        },
+        {
+            "name": "phpunit/dbunit",
+            "version": "2.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/dbunit.git",
+                "reference": "5c35d74549c21ba55d0ea74ba89d191a51f8cf25"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/dbunit/zipball/5c35d74549c21ba55d0ea74ba89d191a51f8cf25",
+                "reference": "5c35d74549c21ba55d0ea74ba89d191a51f8cf25",
+                "shasum": ""
+            },
+            "require": {
+                "ext-pdo": "*",
+                "ext-simplexml": "*",
+                "php": "^5.4 || ^7.0",
+                "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0",
+                "symfony/yaml": "^2.1 || ^3.0"
+            },
+            "bin": [
+                "dbunit"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sb@sebastian-bergmann.de",
+                    "role": "lead"
+                }
+            ],
+            "description": "DbUnit port for PHP/PHPUnit to support database interaction testing.",
+            "homepage": "https://github.com/sebastianbergmann/dbunit/",
+            "keywords": [
+                "database",
+                "testing",
+                "xunit"
+            ],
+            "time": "2016-12-02T14:39:14+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
