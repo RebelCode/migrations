@@ -97,7 +97,7 @@ class MySqlDatabase extends AbstractDatabase
     ) {
         parent::__construct($dbDriver);
 
-        $this->_setLogTable($logTable);
+        $this->_setLogTableName($logTable);
         $this->_setLogTableVersionColumn($versionColumn);
         $this->_setLogTableStatusColumn($statusColumn);
     }
@@ -121,7 +121,7 @@ class MySqlDatabase extends AbstractDatabase
      *
      * @param string|Stringable $logTable The name of the version table.
      */
-    protected function _setLogTable($logTable)
+    protected function _setLogTableName($logTable)
     {
         $this->logTable = $logTable;
     }
