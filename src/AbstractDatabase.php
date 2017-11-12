@@ -46,6 +46,27 @@ abstract class AbstractDatabase extends ByjgAbstractDatabase
     const PLACEHOLDER_LOG_STATUS_COLUMN = '{lt_status}';
 
     /**
+     * The version status used to indicate completed migrations.
+     *
+     * @since [*next-version*]
+     */
+    const STATUS_COMPLETE = 'complete';
+
+    /**
+     * The version status used to indicated partial migrations.
+     *
+     * @since [*next-version*]
+     */
+    const STATUS_PARTIAL = 'partial';
+
+    /**
+     * The version status used to indicated an unknown migration state, typically used for the base version.
+     *
+     * @since [*next-version*]
+     */
+    const STATUS_UNKNOWN = 'unknown';
+
+    /**
      * Formats a query string.
      *
      * @since [*next-version*]
@@ -150,7 +171,13 @@ abstract class AbstractDatabase extends ByjgAbstractDatabase
 
         if (empty($versionInfo[$versionCol])) {
             $this->getDbDriver()->execute(
-                $this->_formatSql('INSERT INTO {lt} VALUES(0, \'unknown\')')
+                $this->_formatSql(
+                    'INSERT INTO %1$s VALUES(0, \'%2$s\')',
+                    [
+                        static::PLACEHOLDER_LOG_TABLE,
+                        static::STATUS_UNKNOWN,
+                    ]
+                )
             );
         }
     }
@@ -173,7 +200,7 @@ abstract class AbstractDatabase extends ByjgAbstractDatabase
         );
         $this->getDbDriver()->execute($this->_formatSql('DROP TABLE {lt}'));
         $this->createVersion();
-        $this->setVersion($currentVersion, 'unknown');
+        $this->setVersion($currentVersion, static::STATUS_UNKNOWN);
     }
 
     /**
