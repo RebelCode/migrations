@@ -72,7 +72,6 @@ abstract class AbstractDatabase extends ByjgAbstractDatabase
      * @since [*next-version*]
      *
      * @param string $sql  The SQL query string to format.
-     *
      * @param array  $args Optional arguments to interpolate into the SQL string.
      *
      * @return string The formatted SQL query.
