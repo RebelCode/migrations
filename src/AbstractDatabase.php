@@ -75,10 +75,12 @@ abstract class AbstractDatabase extends ByjgAbstractDatabase
      */
     public function getVersion()
     {
-        $result = [];
+        $result     = [];
+        $versionCol = $this->_getLogTableVersionColumn();
+        $statusCol  = $this->_getLogTableStatusColumn();
 
         try {
-            $result['version'] = $this->getDbDriver()->getScalar(
+            $result[$versionCol] = $this->getDbDriver()->getScalar(
                 $this->_formatSql('SELECT {lt_version} FROM {lt}')
             );
         } catch (\Exception $ex) {
@@ -88,7 +90,7 @@ abstract class AbstractDatabase extends ByjgAbstractDatabase
         }
 
         try {
-            $result['status'] = $this->getDbDriver()->getScalar(
+            $result[$statusCol] = $this->getDbDriver()->getScalar(
                 $this->_formatSql('SELECT {lt_status} FROM {lt}')
             );
         } catch (\Exception $ex) {
@@ -125,7 +127,9 @@ abstract class AbstractDatabase extends ByjgAbstractDatabase
     {
         // Get the version to check if exists
         $versionInfo = $this->getVersion();
-        if (empty($versionInfo['version'])) {
+        $versionCol  = $this->_getLogTableVersionColumn();
+
+        if (empty($versionInfo[$versionCol])) {
             $this->getDbDriver()->execute(
                 $this->_formatSql('INSERT INTO {lt} VALUES(0, \'unknown\')')
             );
