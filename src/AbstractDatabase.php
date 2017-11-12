@@ -50,13 +50,16 @@ abstract class AbstractDatabase extends ByjgAbstractDatabase
      *
      * @since [*next-version*]
      *
-     * @param string $sql The SQL query string to format.
+     * @param string $sql  The SQL query string to format.
+     *
+     * @param array  $args Optional arguments to interpolate into the SQL string.
      *
      * @return string The formatted SQL query.
      */
-    protected function _formatSql($sql)
+    protected function _formatSql($sql, array $args = [])
     {
         $sql = $this->_normalizeString($sql);
+        $sql = vsprintf($sql, $args);
         $sql = str_replace(static::PLACEHOLDER_DATABASE, $this->_getDatabaseName(), $sql);
         $sql = str_replace(static::PLACEHOLDER_LOG_TABLE, $this->_getLogTableName(), $sql);
         $sql = str_replace(static::PLACEHOLDER_LOG_VERSION_COLUMN, $this->_getLogTableVersionColumn(), $sql);
