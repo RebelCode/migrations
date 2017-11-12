@@ -228,7 +228,6 @@ abstract class AbstractDatabase extends ByjgAbstractDatabase
                 ]
             )
         );
-        $this->getDbDriver()->execute($this->_formatSql('DROP TABLE {lt}'));
         $this->createVersion();
         $this->setVersion($currentVersion, static::STATUS_UNKNOWN);
     }
