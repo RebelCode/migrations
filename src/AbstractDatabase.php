@@ -81,7 +81,13 @@ abstract class AbstractDatabase extends ByjgAbstractDatabase
 
         try {
             $result[$versionCol] = $this->getDbDriver()->getScalar(
-                $this->_formatSql('SELECT {lt_version} FROM {lt}')
+                $this->_formatSql(
+                    'SELECT %1$s FROM %2$s',
+                    [
+                        static::PLACEHOLDER_LOG_VERSION_COLUMN,
+                        static::PLACEHOLDER_LOG_TABLE,
+                    ]
+                )
             );
         } catch (\Exception $ex) {
             throw new DatabaseNotVersionedException(
@@ -91,7 +97,13 @@ abstract class AbstractDatabase extends ByjgAbstractDatabase
 
         try {
             $result[$statusCol] = $this->getDbDriver()->getScalar(
-                $this->_formatSql('SELECT {lt_status} FROM {lt}')
+                $this->_formatSql(
+                    'SELECT %1$s FROM %2$s',
+                    [
+                        static::PLACEHOLDER_LOG_STATUS_COLUMN,
+                        static::PLACEHOLDER_LOG_TABLE,
+                    ]
+                )
             );
         } catch (\Exception $ex) {
             throw new OldVersionSchemaException(
@@ -110,7 +122,14 @@ abstract class AbstractDatabase extends ByjgAbstractDatabase
     public function setVersion($version, $status)
     {
         $this->getDbDriver()->execute(
-            $this->_formatSql('UPDATE {lt} SET {lt_version} = :version, {lt_status} = :status'),
+            $this->_formatSql(
+                'UPDATE %1$s SET %2$s = :version, %3$s = :status',
+                [
+                    static::PLACEHOLDER_LOG_TABLE,
+                    static::PLACEHOLDER_LOG_VERSION_COLUMN,
+                    static::PLACEHOLDER_LOG_STATUS_COLUMN,
+                ]
+            ),
             [
                 'version' => $version,
                 'status'  => $status,
@@ -143,7 +162,15 @@ abstract class AbstractDatabase extends ByjgAbstractDatabase
      */
     public function updateVersionTable()
     {
-        $currentVersion = $this->getDbDriver()->getScalar($this->_formatSql('SELECT {lt_version} FROM {lt}'));
+        $currentVersion = $this->getDbDriver()->getScalar(
+            $this->_formatSql(
+                'SELECT %1$s FROM %2$s',
+                [
+                    static::PLACEHOLDER_LOG_VERSION_COLUMN,
+                    static::PLACEHOLDER_LOG_TABLE,
+                ]
+            )
+        );
         $this->getDbDriver()->execute($this->_formatSql('DROP TABLE {lt}'));
         $this->createVersion();
         $this->setVersion($currentVersion, 'unknown');
