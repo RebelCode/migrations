@@ -187,6 +187,36 @@ abstract class AbstractDatabase extends ByjgAbstractDatabase
      *
      * @since [*next-version*]
      */
+    public function createVersion()
+    {
+        $this->executeSql(
+            $this->_formatSql(
+                'DROP TABLE IF EXISTS %s',
+                [
+                    static::PLACEHOLDER_LOG_TABLE,
+                ]
+            )
+        );
+
+        $this->executeSql(
+            $this->_formatSql(
+                'CREATE TABLE IF NOT EXISTS %1$s (%2$s int, %3$s varchar(20))',
+                [
+                    static::PLACEHOLDER_LOG_TABLE,
+                    static::PLACEHOLDER_LOG_VERSION_COLUMN,
+                    static::PLACEHOLDER_LOG_STATUS_COLUMN,
+                ]
+            )
+        );
+
+        $this->checkExistsVersion();
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @since [*next-version*]
+     */
     public function updateVersionTable()
     {
         $currentVersion = $this->getDbDriver()->getScalar(
