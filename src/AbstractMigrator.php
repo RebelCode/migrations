@@ -306,7 +306,7 @@ abstract class AbstractMigrator extends ByjgMigration
         if ($handle) {
             while (($_file = readdir($handle)) !== false) {
                 if (preg_match($regex, $_file)) {
-                    $files[] = $_file;
+                    $files[] = rtrim($directory, '/\\') . DIRECTORY_SEPARATOR . $_file;
                 }
             }
         }
