@@ -19,13 +19,11 @@ abstract class BaseDatabaseTestCase extends PHPUnit_Extensions_Database_TestCase
     /**
      * The PDO instance.
      *
-     * Should only be initialised once for every clean-up/fixture load.
-     *
      * @since [*next-version*]
      *
      * @var PDO
      */
-    static protected $pdo = null;
+    protected $pdo = null;
 
     /**
      * The DB connection.
@@ -111,10 +109,10 @@ abstract class BaseDatabaseTestCase extends PHPUnit_Extensions_Database_TestCase
      */
     protected function _getPdo()
     {
-        if (self::$pdo == null) {
-            self::$pdo = new PDO('sqlite::memory:');
+        if ($this->pdo == null) {
+            $this->pdo = new PDO('sqlite::memory:');
         }
 
-        return self::$pdo;
+        return $this->pdo;
     }
 }
