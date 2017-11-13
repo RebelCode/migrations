@@ -3,11 +3,15 @@
 namespace RebelCode\Migrations\FuncTest;
 
 use ByJG\AnyDataset\DbDriverInterface;
+use ByJG\DbMigration\Database\DatabaseInterface;
+use Exception;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit_Framework_MockObject_MockObject;
+use RebelCode\Migrations\AbstractDatabase;
 use RebelCode\Migrations\AbstractMigrator;
 use RebelCode\Migrations\TestStub\BaseDatabaseTestCase;
+use RebelCode\Migrations\TestStub\PdoSqliteDriverStub;
 
 /**
  * Tests {@see RebelCode\Migrations\AbstractMigrator}.
@@ -17,6 +21,34 @@ use RebelCode\Migrations\TestStub\BaseDatabaseTestCase;
 class AbstractMigratorTest extends BaseDatabaseTestCase
 {
     /**
+     * The name of the mocked database.
+     *
+     * @since [*next-version*]
+     */
+    const DB_NAME = 'migrations';
+
+    /**
+     * The name of the log migration table in the mocked database.
+     *
+     * @since [*next-version*]
+     */
+    const TABLE_NAME = 'log';
+
+    /**
+     * The name of the version column in the log migration table.
+     *
+     * @since [*next-version*]
+     */
+    const VERSION_COL = 'version';
+
+    /**
+     * The name of the status column in the log migration table.
+     *
+     * @since [*next-version*]
+     */
+    const STATUS_COL = 'status';
+
+    /**
      * {@inheritdoc}
      *
      * @since [*next-version*]
@@ -24,9 +56,9 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
     protected function _getDatabaseSchema()
     {
         return [
-            'log' => [
-                'version' => ['type' => 'integer'],
-                'status'  => ['type' => 'text'],
+            static::TABLE_NAME => [
+                static::VERSION_COL => ['type' => 'integer'],
+                static::STATUS_COL  => ['type' => 'text'],
             ],
         ];
     }
@@ -47,36 +79,83 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
      * @since [*next-version*]
      *
      * @param array                  $mockMethods Additional methods to mock.
-     *
-     * @param DbDriverInterface|null $dbDriver    Optional database driver.
+     * @param DatabaseInterface|null $database    The database.
      *
      * @return PHPUnit_Framework_MockObject_MockObject
      */
-    public function createInstance(array $mockMethods = [], $dbDriver = null)
+    public function createInstance(array $mockMethods = [], $database = null)
     {
         $mock = $this->getMockBuilder(AbstractMigrator::class)
                      ->setMethods(
                          array_merge(
                              $mockMethods,
                              [
+                                 'getDbCommand',
                                  '__',
-                                 '_createCouldNotMigrateException',
                                  '_normalizeInt',
                                  '_normalizeString',
                                  '_prepareSql',
                                  '_getMigrationFilePattern',
-                                 'getDbCommand',
+                                 '_createCouldNotMigrateException',
                              ]
                          )
                      )
                      ->disableOriginalConstructor()
                      ->getMockForAbstractClass();
 
+        $mock->method('getDbCommand')->willReturn($database);
         $mock->method('__')->willReturnArgument(0);
         $mock->method('_prepareSql')->willReturnArgument(0);
         $mock->method('_normalizeInt')->willReturnArgument(0);
         $mock->method('_normalizeString')->willReturnArgument(0);
-        $mock->method('getDbCommand')->willReturn($dbDriver);
+        $mock->method('_createCouldNotMigrateException')->willReturnCallback(
+            function($m, $c, $p) {
+                return new Exception($m, $c, $p);
+            }
+        );
+
+        return $mock;
+    }
+
+    /**
+     * Creates a new mocked database for testing.
+     *
+     * @since [*next-version*]
+     *
+     * @param DbDriverInterface $driver The db driver.
+     *
+     * @return DatabaseInterface The created database.
+     */
+    public function createDatabase($driver = null)
+    {
+        $builder = $this->getMockBuilder(AbstractDatabase::class)
+                        ->setMethods(
+                            [
+                                'getDbDriver',
+                                'executeSql',
+                                '_getDatabaseName',
+                                '_getLogTableName',
+                                '_getLogTableVersionColumn',
+                                '_getLogTableStatusColumn',
+                                '_normalizeString',
+                            ]
+                        )
+                        ->disableOriginalConstructor();
+
+        $mock = $builder->getMockForAbstractClass();
+        $mock->method('getDbDriver')->willReturn($driver);
+        $mock->method('_getDatabaseName')->willReturn(static::DB_NAME);
+        $mock->method('_getLogTableName')->willReturn(static::TABLE_NAME);
+        $mock->method('_getLogTableVersionColumn')->willReturn(static::VERSION_COL);
+        $mock->method('_getLogTableStatusColumn')->willReturn(static::STATUS_COL);
+        $mock->method('_normalizeString')->willReturnArgument(0);
+        $mock->method('executeSql')->willReturnCallback(
+            function($sql) use ($driver) {
+                if ($driver !== null) {
+                    $driver->execute($sql);
+                }
+            }
+        );
 
         return $mock;
     }
@@ -256,8 +335,16 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
         $files = $reflect->_getMatchingFiles($fileSystem->url(), $pattern);
 
         $this->assertCount(2, $files, 'Expected number of matched files is incorrect.');
-        $this->assertContains($f2, $files, 'Match files do not contain expected file.');
-        $this->assertContains($f3, $files, 'Match files do not contain expected file.');
+        $this->assertContains(
+            $fileSystem->url() . DIRECTORY_SEPARATOR . $f2,
+            $files,
+            'Match files do not contain expected file.'
+        );
+        $this->assertContains(
+            $fileSystem->url() . DIRECTORY_SEPARATOR . $f3,
+            $files,
+            'Match files do not contain expected file.'
+        );
     }
 
     /**
@@ -293,6 +380,7 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
                 );
 
         $files = $reflect->_getMigrationFiles($version, $increment);
+        $files = array_map('basename', $files);
 
         $this->assertCount(1, $files, 'Resulting file list contains more than one entry.');
         $this->assertContains('up-2.sql', $files, 'The expected file is not in the resulting file list.');
@@ -331,6 +419,7 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
                 );
 
         $files = $reflect->_getMigrationFiles($version, $increment);
+        $files = array_map('basename', $files);
 
         $this->assertCount(1, $files, 'Resulting file list contains more than one entry.');
         $this->assertContains('down-3.sql', $files, 'The expected file is not in the resulting file list.');
@@ -419,5 +508,338 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
         $result = $reflect->_getMigrationSqlQuery(null, null);
 
         $this->assertEquals($expected, $result, 'Retrieved and expected contents are not the same.');
+    }
+
+    /**
+     * Tests the migration reset to assert whether the version is correctly set to zero.
+     *
+     * @since [*next-version*]
+     */
+    public function testReset()
+    {
+        $driver   = new PdoSqliteDriverStub($this->_getPdo(), static::DB_NAME);
+        $database = $this->createDatabase($driver);
+        $subject  = $this->createInstance([], $database);
+        $reflect  = $this->reflect($subject);
+        $expected = [
+            static::VERSION_COL => 0,
+            static::STATUS_COL  => AbstractDatabase::STATUS_COMPLETE,
+        ];
+
+        $reflect->_reset();
+
+        $this->assertEquals($expected, $reflect->getCurrentVersion(), 'Expected and retrieved versions do not match.');
+    }
+
+    /**
+     * Tests the migration up procedure to assert whether the version is correctly incremented and the SQL invoked.
+     *
+     * @since [*next-version*]
+     */
+    public function testMigrateUp()
+    {
+        $driver   = new PdoSqliteDriverStub($this->_getPdo(), static::DB_NAME);
+        $database = $this->createDatabase($driver);
+        $subject  = $this->createInstance(['_getMigrationFilePatterns'], $database);
+        $reflect  = $this->reflect($subject);
+
+        $mTable     = 'test_table';
+        $mTableCol  = 'id';
+        $fileSystem = $this->createFileSystem(
+            [
+                'sql' => [
+                    'up' => [
+                        '1.sql' => sprintf('CREATE TABLE IF NOT EXISTS %1$s (%2$s int)', $mTable, $mTableCol),
+                    ],
+                ],
+            ]
+        );
+
+        $subject->method('_getMigrationFilePatterns')
+                ->willReturn(
+                    [
+                        $fileSystem->url() . '/sql/up/' => '/^%d\.sql$/',
+                    ]
+                );
+
+        $expected = [
+            static::VERSION_COL => 1,
+            static::STATUS_COL  => AbstractDatabase::STATUS_COMPLETE,
+        ];
+
+        $reflect->_reset();
+        $reflect->_up();
+
+        $tables  = $this->getConnection()->getMetaData()->getTableNames();
+        $columns = $this->getConnection()->getMetaData()->getTableColumns($mTable);
+
+        $this->assertEquals($expected, $reflect->getCurrentVersion(), 'Incorrect database migration version.');
+        $this->assertContains($mTable, $tables, 'Database does not have the new table.');
+        $this->assertEquals([$mTableCol], $columns, 'Table created by the migration does not have the column.');
+    }
+
+    /**
+     * Tests the migration up procedure to assert whether the version is correctly incremented and the SQL invoked.
+     *
+     * @since [*next-version*]
+     */
+    public function testMigrateUpMultiple()
+    {
+        $driver   = new PdoSqliteDriverStub($this->_getPdo(), static::DB_NAME);
+        $database = $this->createDatabase($driver);
+        $subject  = $this->createInstance(['_getMigrationFilePatterns'], $database);
+        $reflect  = $this->reflect($subject);
+
+        $mTable      = 'test_table';
+        $mTable1Col1 = 'id';
+        $mTable1Col2 = 'name';
+        $mTable2     = 'test_table2';
+        $mTable2Col1 = 'id';
+        $fileSystem  = $this->createFileSystem(
+            [
+                'sql' => [
+                    'up' => [
+                        '1.sql' => sprintf('CREATE TABLE IF NOT EXISTS %1$s (%2$s int)', $mTable, $mTable1Col1),
+                        '2.sql' => sprintf('ALTER TABLE %1$s ADD %2$s int', $mTable, $mTable1Col2),
+                        '3.sql' => sprintf('CREATE TABLE IF NOT EXISTS %1$s (%2$s int)', $mTable2, $mTable2Col1),
+                    ],
+                ],
+            ]
+        );
+
+        $subject->method('_getMigrationFilePatterns')
+                ->willReturn(
+                    [
+                        $fileSystem->url() . '/sql/up/' => '/^%d\.sql$/',
+                    ]
+                );
+
+        $expected = [
+            static::VERSION_COL => 3,
+            static::STATUS_COL  => AbstractDatabase::STATUS_COMPLETE,
+        ];
+
+        $reflect->_reset();
+        $reflect->_up();
+
+        $tables   = $this->getConnection()->getMetaData()->getTableNames();
+        $columns1 = $this->getConnection()->getMetaData()->getTableColumns($mTable);
+        $columns2 = $this->getConnection()->getMetaData()->getTableColumns($mTable2);
+
+        $this->assertEquals($expected, $reflect->getCurrentVersion(), 'Incorrect database migration version.');
+
+        $this->assertContains($mTable, $tables, 'Table added by migration 1 not found in database.');
+        $this->assertEquals(
+            [$mTable1Col1, $mTable1Col2],
+            $columns1,
+            'Incorrect columns for table created in migration #1 and modified in migration #2.'
+        );
+
+        $this->assertContains($mTable2, $tables, 'Table added by migration 3 not found in database.');
+        $this->assertEquals([$mTable2Col1], $columns2, 'Incorrect columns for table created in migration #2.');
+    }
+
+    /**
+     * Tests the migration up procedure to assert whether the version is correctly incremented and the SQL invoked.
+     *
+     * @since [*next-version*]
+     */
+    public function testMigrateUpSpecific()
+    {
+        $driver   = new PdoSqliteDriverStub($this->_getPdo(), static::DB_NAME);
+        $database = $this->createDatabase($driver);
+        $subject  = $this->createInstance(['_getMigrationFilePatterns'], $database);
+        $reflect  = $this->reflect($subject);
+
+        $mTable      = 'test_table';
+        $mTable1Col1 = 'id';
+        $mTable1Col2 = 'name';
+        $mTable2     = 'test_table2';
+        $mTable2Col1 = 'id';
+        $fileSystem  = $this->createFileSystem(
+            [
+                'sql' => [
+                    'up' => [
+                        '1.sql' => sprintf('CREATE TABLE IF NOT EXISTS %1$s (%2$s int)', $mTable, $mTable1Col1),
+                        '2.sql' => sprintf('ALTER TABLE %1$s ADD %2$s int', $mTable, $mTable1Col2),
+                        '3.sql' => sprintf('CREATE TABLE IF NOT EXISTS %1$s (%2$s int)', $mTable2, $mTable2Col1),
+                    ],
+                ],
+            ]
+        );
+
+        $subject->method('_getMigrationFilePatterns')
+                ->willReturn(
+                    [
+                        $fileSystem->url() . '/sql/up/' => '/^%d\.sql$/',
+                    ]
+                );
+
+        $expected = [
+            static::VERSION_COL => 2,
+            static::STATUS_COL  => AbstractDatabase::STATUS_COMPLETE,
+        ];
+
+        $reflect->_reset();
+        $reflect->_up(2);
+
+        $tables   = $this->getConnection()->getMetaData()->getTableNames();
+        $columns1 = $this->getConnection()->getMetaData()->getTableColumns($mTable);
+        $columns2 = $this->getConnection()->getMetaData()->getTableColumns($mTable2);
+
+        $this->assertEquals($expected, $reflect->getCurrentVersion(), 'Incorrect database migration version.');
+
+        $this->assertContains($mTable, $tables, 'Table added by migration 1 not found in database.');
+        $this->assertEquals(
+            [$mTable1Col1, $mTable1Col2],
+            $columns1,
+            'Incorrect columns for table created in migration #1 and modified in migration #2.'
+        );
+
+        $this->assertNotContains($mTable2, $tables, 'Table added by migration 3 was found but should not exist.');
+    }
+
+    /**
+     * Tests the migration up procedure to assert whether the version is correctly incremented and the SQL invoked.
+     *
+     * @since [*next-version*]
+     */
+    public function testMigrateDown()
+    {
+        $driver   = new PdoSqliteDriverStub($this->_getPdo(), static::DB_NAME);
+        $database = $this->createDatabase($driver);
+        $subject  = $this->createInstance(['_getMigrationFilePatterns'], $database);
+        $reflect  = $this->reflect($subject);
+
+        $mTable1 = 'test_table';
+        $mTable2 = 'test_table2';
+        $mTable3 = 'test_table3';
+
+        $fileSystem = $this->createFileSystem(
+            [
+                'sql' => [
+                    'up'   => [
+                        '1.sql' => sprintf('CREATE TABLE IF NOT EXISTS %1$s (id int)', $mTable1),
+                        '2.sql' => sprintf('CREATE TABLE IF NOT EXISTS %1$s (id int)', $mTable2),
+                        '3.sql' => sprintf('CREATE TABLE IF NOT EXISTS %1$s (id int)', $mTable3),
+                    ],
+                    'down' => [
+                        '1.sql' => sprintf('DROP TABLE IF EXISTS %1$s', $mTable1),
+                        '2.sql' => sprintf('DROP TABLE IF EXISTS %1$s', $mTable2),
+                        '3.sql' => sprintf('DROP TABLE IF EXISTS %1$s', $mTable3),
+                    ],
+                ],
+            ]
+        );
+
+        $subject->method('_getMigrationFilePatterns')
+                ->willReturnCallback(
+                    function($direction) use ($fileSystem) {
+                        return [
+                            sprintf('%1$s/sql/%2$s/', $fileSystem->url(), $direction) => '/^%d\.sql$/',
+                        ];
+                    }
+                );
+
+        $expected = [
+            static::VERSION_COL => 0,
+            static::STATUS_COL  => AbstractDatabase::STATUS_COMPLETE,
+        ];
+
+        $reflect->_reset();
+        $reflect->_up();
+        $reflect->_down();
+
+        $tables = $this->getConnection()->getMetaData()->getTableNames();
+
+        $this->assertEquals($expected, $reflect->getCurrentVersion(), 'Incorrect database migration version.');
+
+        $this->assertNotContains(
+            $mTable1,
+            $tables,
+            'Table added by migration 1 found in database but should not exist.'
+        );
+        $this->assertNotContains(
+            $mTable2,
+            $tables,
+            'Table added by migration 2 found in database but should not exist.'
+        );
+        $this->assertNotContains(
+            $mTable3,
+            $tables,
+            'Table added by migration 3 found in database but should not exist.'
+        );
+    }
+
+    /**
+     * Tests the migration up procedure to assert whether the version is correctly incremented and the SQL invoked.
+     *
+     * @since [*next-version*]
+     */
+    public function testMigrateDownSpecific()
+    {
+        $driver   = new PdoSqliteDriverStub($this->_getPdo(), static::DB_NAME);
+        $database = $this->createDatabase($driver);
+        $subject  = $this->createInstance(['_getMigrationFilePatterns'], $database);
+        $reflect  = $this->reflect($subject);
+
+        $mTable1 = 'test_table';
+        $mTable2 = 'test_table2';
+        $mTable3 = 'test_table3';
+
+        $fileSystem = $this->createFileSystem(
+            [
+                'sql' => [
+                    'up'   => [
+                        '1.sql' => sprintf('CREATE TABLE IF NOT EXISTS %1$s (id int)', $mTable1),
+                        '2.sql' => sprintf('CREATE TABLE IF NOT EXISTS %1$s (id int)', $mTable2),
+                        '3.sql' => sprintf('CREATE TABLE IF NOT EXISTS %1$s (id int)', $mTable3),
+                    ],
+                    'down' => [
+                        '1.sql' => sprintf('DROP TABLE IF EXISTS %1$s', $mTable1),
+                        '2.sql' => sprintf('DROP TABLE IF EXISTS %1$s', $mTable2),
+                        '3.sql' => sprintf('DROP TABLE IF EXISTS %1$s', $mTable3),
+                    ],
+                ],
+            ]
+        );
+
+        $subject->method('_getMigrationFilePatterns')
+                ->willReturnCallback(
+                    function($direction) use ($fileSystem) {
+                        return [
+                            sprintf('%1$s/sql/%2$s/', $fileSystem->url(), $direction) => '/^%d\.sql$/',
+                        ];
+                    }
+                );
+
+        $expected = [
+            static::VERSION_COL => 2,
+            static::STATUS_COL  => AbstractDatabase::STATUS_COMPLETE,
+        ];
+
+        $reflect->_reset();
+        $reflect->_up();
+        $reflect->_down(2);
+
+        $tables = $this->getConnection()->getMetaData()->getTableNames();
+
+        $this->assertEquals($expected, $reflect->getCurrentVersion(), 'Incorrect database migration version.');
+
+        $this->assertContains(
+            $mTable1,
+            $tables,
+            'Table added by migration 1 not found in database.'
+        );
+        $this->assertContains(
+            $mTable2,
+            $tables,
+            'Table added by migration 2 not found in database.'
+        );
+        $this->assertNotContains(
+            $mTable3,
+            $tables,
+            'Table added by migration 3 found in database but should not exist.'
+        );
     }
 }
