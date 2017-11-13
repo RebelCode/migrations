@@ -139,7 +139,7 @@ class MySqlDatabase extends AbstractDatabase
      *
      * @since [*next-version*]
      *
-     * @return Stringable|string The name of the version table.
+     * @return string|Stringable The name of the version table.
      */
     protected function _getLogTableName()
     {
@@ -155,7 +155,7 @@ class MySqlDatabase extends AbstractDatabase
      */
     protected function _setLogTableName($logTable)
     {
-        $this->logTable = $logTable;
+        $this->logTable = $this->_normalizeString($logTable);
     }
 
     /**
@@ -175,11 +175,11 @@ class MySqlDatabase extends AbstractDatabase
      *
      * @since [*next-version*]
      *
-     * @param string $versionColumn The name of the version column in the log table.
+     * @param string|Stringable $versionColumn The name of the version column in the log table.
      */
     protected function _setLogTableVersionColumn($versionColumn)
     {
-        $this->versionColumn = $versionColumn;
+        $this->versionColumn = $this->_normalizeString($versionColumn);
     }
 
     /**
@@ -199,11 +199,11 @@ class MySqlDatabase extends AbstractDatabase
      *
      * @since [*next-version*]
      *
-     * @param string $statusColumn The name of the version column in the log table.
+     * @param string|Stringable $statusColumn The name of the version column in the log table.
      */
     protected function _setLogTableStatusColumn($statusColumn)
     {
-        $this->statusColumn = $statusColumn;
+        $this->statusColumn = $this->_normalizeString($statusColumn);
     }
 
     /**
