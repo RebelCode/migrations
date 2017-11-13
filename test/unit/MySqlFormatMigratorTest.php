@@ -110,7 +110,7 @@ class MySqlFormatMigratorTest extends TestCase
     {
         $uri     = $this->createUri();
         $db      = $this->createDatabase();
-        $vfs     = $this->createFileSystem(['base.sql' => '']);
+        $vfs     = $this->createFileSystem();
         $subject = new MySqlFormatMigrator($uri, $db, $vfs->url());
 
         $this->assertInstanceOf(
@@ -151,7 +151,7 @@ class MySqlFormatMigratorTest extends TestCase
     {
         $uri             = $this->createUri();
         $database        = $this->createDatabase();
-        $fileSystem      = $this->createFileSystem(['base.sql' => '']);
+        $fileSystem      = $this->createFileSystem();
         $placeholder     = uniqid('placeholder-');
         $replacement     = uniqid('replacement-');
         $fullPlaceholder = sprintf('{%s}', $placeholder);
@@ -182,7 +182,7 @@ class MySqlFormatMigratorTest extends TestCase
     {
         $uri        = $this->createUri();
         $database   = $this->createDatabase();
-        $fileSystem = $this->createFileSystem(['base.sql' => '']);
+        $fileSystem = $this->createFileSystem();
         $subject    = new MySqlFormatMigrator($uri, $database, $fileSystem->url());
         $reflect    = $this->reflect($subject);
 
@@ -212,7 +212,7 @@ class MySqlFormatMigratorTest extends TestCase
     {
         $uri        = $this->createUri();
         $database   = $this->createDatabase();
-        $fileSystem = $this->createFileSystem(['base.sql' => '']);
+        $fileSystem = $this->createFileSystem();
         $subject    = new MySqlFormatMigrator($uri, $database, $fileSystem->url());
         $reflect    = $this->reflect($subject);
 
