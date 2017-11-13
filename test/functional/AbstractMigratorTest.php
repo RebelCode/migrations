@@ -2,37 +2,59 @@
 
 namespace RebelCode\Migrations\FuncTest;
 
+use ByJG\AnyDataset\DbDriverInterface;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit_Framework_MockObject_MockObject;
-use Xpmock\TestCase;
+use RebelCode\Migrations\AbstractMigrator;
+use RebelCode\Migrations\TestStub\BaseDatabaseTestCase;
 
 /**
  * Tests {@see RebelCode\Migrations\AbstractMigrator}.
  *
  * @since [*next-version*]
  */
-class AbstractMigratorTest extends TestCase
+class AbstractMigratorTest extends BaseDatabaseTestCase
 {
     /**
-     * The class name of the test subject.
+     * {@inheritdoc}
      *
      * @since [*next-version*]
      */
-    const TEST_SUBJECT_CLASSNAME = 'RebelCode\Migrations\AbstractMigrator';
+    protected function _getDatabaseSchema()
+    {
+        return [
+            'log' => [
+                'version' => ['type' => 'integer'],
+                'status'  => ['type' => 'text'],
+            ],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @since [*next-version*]
+     */
+    protected function getDataSet()
+    {
+        return $this->createArrayDataSet([]);
+    }
 
     /**
      * Creates a new instance of the test subject.
      *
      * @since [*next-version*]
      *
-     * @param array $mockMethods Additional methods to mock.
+     * @param array                  $mockMethods Additional methods to mock.
+     *
+     * @param DbDriverInterface|null $dbDriver    Optional database driver.
      *
      * @return PHPUnit_Framework_MockObject_MockObject
      */
-    public function createInstance(array $mockMethods = [])
+    public function createInstance(array $mockMethods = [], $dbDriver = null)
     {
-        $mock = $this->getMockBuilder(static::TEST_SUBJECT_CLASSNAME)
+        $mock = $this->getMockBuilder(AbstractMigrator::class)
                      ->setMethods(
                          array_merge(
                              $mockMethods,
@@ -43,6 +65,7 @@ class AbstractMigratorTest extends TestCase
                                  '_normalizeString',
                                  '_prepareSql',
                                  '_getMigrationFilePattern',
+                                 'getDbCommand',
                              ]
                          )
                      )
@@ -53,6 +76,7 @@ class AbstractMigratorTest extends TestCase
         $mock->method('_prepareSql')->willReturnArgument(0);
         $mock->method('_normalizeInt')->willReturnArgument(0);
         $mock->method('_normalizeString')->willReturnArgument(0);
+        $mock->method('getDbCommand')->willReturn($dbDriver);
 
         return $mock;
     }
