@@ -53,6 +53,15 @@ class MySqlDatabase extends AbstractDatabase
     const DEFAULT_LOG_STATUS_COLUMN = 'status';
 
     /**
+     * The database name.
+     *
+     * @since [*next-version*]
+     *
+     * @var string
+     */
+    protected $dbName;
+
+    /**
      * The name of the table where migration versions are logged.
      *
      * @since [*next-version*]
@@ -100,6 +109,29 @@ class MySqlDatabase extends AbstractDatabase
         $this->_setLogTableName($logTable);
         $this->_setLogTableVersionColumn($versionColumn);
         $this->_setLogTableStatusColumn($statusColumn);
+        $this->_setDatabaseName(static::getDatabaseNameFromUri($dbDriver->getUri()));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @since [*next-version*]
+     */
+    protected function _getDatabaseName()
+    {
+        return $this->dbName;
+    }
+
+    /**
+     * Sets the database name.
+     *
+     * @since [*next-version*]
+     *
+     * @param string|Stringable $dbName
+     */
+    protected function _setDatabaseName($dbName)
+    {
+        $this->dbName = $this->_normalizeString($dbName);
     }
 
     /**
@@ -172,16 +204,6 @@ class MySqlDatabase extends AbstractDatabase
     protected function _setLogTableStatusColumn($statusColumn)
     {
         $this->statusColumn = $statusColumn;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @since [*next-version*]
-     */
-    protected function _getDatabaseName()
-    {
-        return static::getDatabaseNameFromUri($this->getDbDriver()->getUri());
     }
 
     /**
