@@ -222,24 +222,6 @@ class MySqlDatabase extends AbstractDatabase
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @since [*next-version*]
-     */
-    public function createVersion()
-    {
-        $this->executeSql(
-            $this->_formatSql('DROP TABLE IF EXISTS {lt}')
-        );
-
-        $this->executeSql(
-            $this->_formatSql('CREATE TABLE IF NOT EXISTS {lt} ({lt_version} int, {lt_status} varchar(20))')
-        );
-
-        $this->checkExistsVersion();
-    }
-
-    /**
      * Retrieves the name of the database in a given URI.
      *
      * @since [*next-version*]
