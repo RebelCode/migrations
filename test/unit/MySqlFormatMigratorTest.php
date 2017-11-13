@@ -121,28 +121,6 @@ class MySqlFormatMigratorTest extends TestCase
     }
 
     /**
-     * Tests whether a valid instance of the test subject can be created.
-     *
-     * @since [*next-version*]
-     */
-    public function testConstructorNoBaseFile()
-    {
-        $uri = $this->createUri();
-        $db  = $this->createDatabase();
-        $vfs = $this->createFileSystem();
-
-        $this->setExpectedException('RebelCode\Migrations\Exception\MigratorExceptionInterface');
-
-        $subject = new MySqlFormatMigrator($uri, $db, $vfs->url());
-
-        $this->assertInstanceOf(
-            MigratorInterface::class,
-            $subject,
-            'A valid instance of the test subject could not be created.'
-        );
-    }
-
-    /**
      * Tests the SQL preparation function to assert whether formatting works as expected.
      *
      * @since [*next-version*]
