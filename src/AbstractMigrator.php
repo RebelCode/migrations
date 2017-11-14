@@ -85,16 +85,10 @@ abstract class AbstractMigrator extends ByjgMigration
     {
         try {
             try {
-                $versionInfo    = $this->getCurrentVersion();
-                $currentVersion = intval($versionInfo['version']);
-
+                $this->getCurrentVersion();
                 $this->down(0);
             } catch (DatabaseNotVersionedException $versionedException) {
-                $currentVersion = 0;
-            }
-
-            if ($this->_callableProgress) {
-                call_user_func_array($this->_callableProgress, ['reset', $currentVersion, 0]);
+                // Do nothing
             }
 
             $db = $this->getDbCommand();
@@ -142,13 +136,6 @@ abstract class AbstractMigrator extends ByjgMigration
             $rawSql = $this->_getMigrationSqlQuery($currentVersion, $increment)
         ) {
             $nextVersion = $currentVersion + $increment;
-
-            if (is_callable($this->_callableProgress)) {
-                call_user_func_array(
-                    $this->_callableProgress,
-                    ['migrate', $currentVersion, $nextVersion]
-                );
-            }
 
             $preparedSql = $this->_prepareSql($rawSql);
 
