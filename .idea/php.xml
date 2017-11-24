@@ -62,6 +62,7 @@
       <path value="$PROJECT_DIR$/vendor/phpunit/dbunit" />
     </include_path>
   </component>
+  <component name="PhpProjectSharedConfiguration" php_language_level="5.5.0" />
   <component name="PhpUnit">
     <phpunit_settings>
       <PhpUnitSettings load_method="CUSTOM_LOADER" bootstrap_file_path="D:/dev/rebelcode/migrations/test/bootstrap.php" configuration_file_path="D:/dev/rebelcode/migrations/phpunit.xml" custom_loader_path="D:/dev/rebelcode/migrations/vendor/autoload.php" phpunit_phar_path="D:/dev/rebelcode/migrations/vendor/bin/phpunit" use_bootstrap_file="true" use_configuration_file="true" />
