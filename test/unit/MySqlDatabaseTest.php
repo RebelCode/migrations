@@ -6,7 +6,6 @@ use RebelCode\Migrations\AbstractDatabase;
 use RebelCode\Migrations\MySqlDatabase as TestSubject;
 use RebelCode\Migrations\TestStub\BaseDatabaseTestCase;
 use RebelCode\Migrations\TestStub\PdoSqliteDriverStub;
-use function uniqid;
 
 /**
  * Tests {@see TestSubject}.
@@ -15,6 +14,13 @@ use function uniqid;
  */
 class MySqlDatabaseTest extends BaseDatabaseTestCase
 {
+    /**
+     * The class name of the test subject.
+     *
+     * @since [*next-version*]
+     */
+    const TEST_SUBJECT_CLASSNAME = 'RebelCode\Migrations\MySqlDatabase';
+
     /**
      * {@inheritdoc}
      *
@@ -25,7 +31,7 @@ class MySqlDatabaseTest extends BaseDatabaseTestCase
         return [
             'migration_log' => [
                 'version' => ['type' => 'integer'],
-                'status'  => ['type' => 'text'],
+                'status' => ['type' => 'text'],
             ],
         ];
     }
@@ -51,17 +57,17 @@ class MySqlDatabaseTest extends BaseDatabaseTestCase
      */
     public function testCanBeCreated()
     {
-        $driver  = new PdoSqliteDriverStub($this->_getPdo(), 'migrations');
+        $driver = new PdoSqliteDriverStub($this->_getPdo(), 'migrations');
         $subject = new TestSubject($driver, 'log');
 
         $this->assertInstanceOf(
-            TestSubject::class,
+            static::TEST_SUBJECT_CLASSNAME,
             $subject,
             'A valid instance of the test subject could not be created.'
         );
 
         $this->assertInstanceOf(
-            AbstractDatabase::class,
+            'RebelCode\Migrations\AbstractDatabase',
             $subject,
             'Test subject does not extend parent abstract class.'
         );
@@ -75,10 +81,10 @@ class MySqlDatabaseTest extends BaseDatabaseTestCase
      */
     public function testConstructorGetters()
     {
-        $driver  = new PdoSqliteDriverStub($this->_getPdo(), 'migrations');
-        $table   = uniqid('table-');
+        $driver = new PdoSqliteDriverStub($this->_getPdo(), 'migrations');
+        $table = uniqid('table-');
         $version = uniqid('version-');
-        $status  = uniqid('status-');
+        $status = uniqid('status-');
         $subject = new TestSubject($driver, $table, $version, $status);
         $reflect = $this->reflect($subject);
 
@@ -111,8 +117,8 @@ class MySqlDatabaseTest extends BaseDatabaseTestCase
      */
     public function testGetSetLogTableName()
     {
-        $driver  = new PdoSqliteDriverStub($this->_getPdo(), 'migrations');
-        $table   = uniqid('table-');
+        $driver = new PdoSqliteDriverStub($this->_getPdo(), 'migrations');
+        $table = uniqid('table-');
         $subject = new TestSubject($driver, '');
         $reflect = $this->reflect($subject);
 
@@ -128,7 +134,7 @@ class MySqlDatabaseTest extends BaseDatabaseTestCase
      */
     public function testGetSetLogTableVersionColumn()
     {
-        $driver  = new PdoSqliteDriverStub($this->_getPdo(), 'migrations');
+        $driver = new PdoSqliteDriverStub($this->_getPdo(), 'migrations');
         $version = uniqid('version-');
         $subject = new TestSubject($driver, '');
         $reflect = $this->reflect($subject);
@@ -149,8 +155,8 @@ class MySqlDatabaseTest extends BaseDatabaseTestCase
      */
     public function testGetSetLogTableStatusColumn()
     {
-        $driver  = new PdoSqliteDriverStub($this->_getPdo(), 'migrations');
-        $status  = uniqid('status-');
+        $driver = new PdoSqliteDriverStub($this->_getPdo(), 'migrations');
+        $status = uniqid('status-');
         $subject = new TestSubject($driver, '');
         $reflect = $this->reflect($subject);
 
@@ -170,8 +176,8 @@ class MySqlDatabaseTest extends BaseDatabaseTestCase
      */
     public function testGetDatabaseName()
     {
-        $dbName  = 'migrations';
-        $driver  = new PdoSqliteDriverStub($this->_getPdo(), $dbName);
+        $dbName = 'migrations';
+        $driver = new PdoSqliteDriverStub($this->_getPdo(), $dbName);
         $subject = new TestSubject($driver, '');
         $reflect = $this->reflect($subject);
 

@@ -60,11 +60,11 @@ class MigratorExceptionTest extends TestCase
      */
     public function testConstructor()
     {
-        $message  = uniqid('message-');
-        $code     = rand();
+        $message = uniqid('message-');
+        $code = rand();
         $previous = new Exception();
         $migrator = $this->createMigrator();
-        $subject  = new MigratorException($message, $code, $previous, $migrator);
+        $subject = new MigratorException($message, $code, $previous, $migrator);
 
         $this->assertEquals($message, $subject->getMessage(), 'Set and retrieved messages are not the same.');
         $this->assertEquals($code, $subject->getCode(), 'Set and retrieved code are not the same.');
