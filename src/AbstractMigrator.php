@@ -122,7 +122,7 @@ abstract class AbstractMigrator extends ByjgMigration
     protected function migrate($upVersion, $increment, $force)
     {
         $versionInfo    = $this->getCurrentVersion();
-        $currentVersion = intval($versionInfo['version']);
+        $currentVersion = $this->_normalizeInt($versionInfo['version']);
 
         if (strpos($versionInfo['status'], 'partial') !== false && !$force) {
             throw new DatabaseIsIncompleteException(
@@ -170,7 +170,8 @@ abstract class AbstractMigrator extends ByjgMigration
     protected function canContinue($currentVersion, $upVersion, $increment)
     {
         // Difference between versions
-        $delta = (intval($upVersion) - intval($currentVersion)) * $increment;
+        $diff  = $this->_normalizeInt($upVersion) - $this->_normalizeInt($currentVersion);
+        $delta = $diff * $increment;
 
         return $delta > 0 || $upVersion === null;
     }
