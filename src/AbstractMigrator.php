@@ -9,6 +9,8 @@ use Dhii\Util\String\StringableInterface as Stringable;
 use Exception as RootException;
 use InvalidArgumentException;
 use RebelCode\Migrations\Exception\CouldNotMigrateExceptionInterface;
+use RegexIterator;
+use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 
 /**
  * Abstract functionality for migrations.
@@ -281,6 +283,7 @@ abstract class AbstractMigrator extends ByjgMigration
      */
     protected function _getMatchingFiles($directory, $regex)
     {
+        $directory = rtrim($directory, '/\\');
         $directory = $this->_normalizeString($directory);
         $regex     = $this->_normalizeString($regex);
 
@@ -288,20 +291,15 @@ abstract class AbstractMigrator extends ByjgMigration
             return [];
         }
 
-        $files  = [];
-        $handle = opendir($directory);
+        $dirIterator = new RecursiveDirectoryIterator(
+            $directory,
+            RecursiveDirectoryIterator::KEY_AS_FILENAME |
+            RecursiveDirectoryIterator::CURRENT_AS_FILEINFO |
+            RecursiveDirectoryIterator::SKIP_DOTS
+        );
+        $regexIterator = new RegexIterator($dirIterator, $regex, RegexIterator::MATCH, RegexIterator::USE_KEY);
 
-        if ($handle) {
-            while (($_file = readdir($handle)) !== false) {
-                if (preg_match($regex, $_file)) {
-                    $files[] = rtrim($directory, '/\\') . DIRECTORY_SEPARATOR . $_file;
-                }
-            }
-        }
-
-        closedir($handle);
-
-        return $files;
+        return iterator_to_array($regexIterator);
     }
 
     /**
