@@ -105,13 +105,13 @@ abstract class AbstractMigrator extends ByjgMigration
     }
 
     /**
-     * Method for execute the migration.
+     * Executes a migration.
      *
      * Overridden to:
-     * * pass different arguments to the callback progress function
-     * * allow preparation of SQL query strings before execution
-     * * contain a portion of the fix for the SQL file execution bug See {@link getMigrationSqlQuery()}.
-     * * throw specific exceptions
+     * - pass different arguments to the callback progress function
+     * - allow preparation of SQL query strings before execution
+     * - contain a portion of the fix for the SQL file execution bug See {@link getMigrationSqlQuery()}.
+     * - throw specific exceptions
      *
      * @param int  $upVersion
      * @param int  $increment Can accept 1 for UP or -1 for down
