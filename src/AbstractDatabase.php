@@ -4,9 +4,9 @@ namespace RebelCode\Migrations;
 
 use ByJG\DbMigration\Database\AbstractDatabase as ByjgAbstractDatabase;
 use ByJG\DbMigration\Exception\DatabaseNotVersionedException;
-use ByJG\DbMigration\Exception\OldVersionSchemaException;
 use Dhii\Util\String\StringableInterface as Stringable;
 use InvalidArgumentException;
+use PDOException;
 
 /**
  * Abstract functionality for databases.
@@ -109,9 +109,9 @@ abstract class AbstractDatabase extends ByjgAbstractDatabase
                     ]
                 )
             );
-        } catch (\Exception $ex) {
+        } catch (PDOException $ex) {
             throw new DatabaseNotVersionedException(
-                'This database does not have a migration version. Please use "migrate reset" or "migrate install" to create one.'
+                'This database does not have a migration version'
             );
         }
 
@@ -125,9 +125,9 @@ abstract class AbstractDatabase extends ByjgAbstractDatabase
                     ]
                 )
             );
-        } catch (\Exception $ex) {
-            throw new OldVersionSchemaException(
-                'This database does not have a migration version. Please use "migrate install" for update it.'
+        } catch (PDOException $ex) {
+            throw new DatabaseNotVersionedException(
+                'This database does not have a migration version'
             );
         }
 
