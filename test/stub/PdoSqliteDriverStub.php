@@ -27,7 +27,7 @@ class PdoSqliteDriverStub extends DbPdoDriver implements DbDriverInterface
      */
     public function __construct(PDO $pdo, $dbName)
     {
-        $this->instance      = $pdo;
-        $this->connectionUri = new Uri('mysql://root@memory/' . $dbName);
+        $this->instance = $pdo;
+        $this->connectionUri = new Uri('mysql://root@memory/'.$dbName);
     }
 }

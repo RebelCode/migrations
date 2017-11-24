@@ -63,7 +63,7 @@ abstract class BaseDatabaseTestCase extends PHPUnit_Extensions_Database_TestCase
             $_columnDefs = [];
 
             foreach ($_columns as $_columnName => $_columnMeta) {
-                $_columnType    = $_columnMeta['type'];
+                $_columnType = $_columnMeta['type'];
                 $_columnPrimary = isset($_columnMeta['primary']) && boolval($_columnMeta['primary']);
 
                 $_columnDefs[] = sprintf(
@@ -75,7 +75,7 @@ abstract class BaseDatabaseTestCase extends PHPUnit_Extensions_Database_TestCase
             }
 
             $_tableColumns = implode(', ', $_columnDefs);
-            $_tableQuery   = sprintf('CREATE TABLE IF NOT EXISTS %1$s (%2$s)', $_tableName, $_tableColumns);
+            $_tableQuery = sprintf('CREATE TABLE IF NOT EXISTS %1$s (%2$s)', $_tableName, $_tableColumns);
 
             $pdo->exec($_tableQuery);
         }

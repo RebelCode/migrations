@@ -58,7 +58,7 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
         return [
             static::TABLE_NAME => [
                 static::VERSION_COL => ['type' => 'integer'],
-                static::STATUS_COL  => ['type' => 'text'],
+                static::STATUS_COL => ['type' => 'text'],
             ],
         ];
     }
@@ -109,7 +109,7 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
         $mock->method('_normalizeInt')->willReturnArgument(0);
         $mock->method('_normalizeString')->willReturnArgument(0);
         $mock->method('_createCouldNotMigrateException')->willReturnCallback(
-            function($m, $c, $p) {
+            function ($m, $c, $p) {
                 return new Exception($m, $c, $p);
             }
         );
@@ -150,7 +150,7 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
         $mock->method('_getLogTableStatusColumn')->willReturn(static::STATUS_COL);
         $mock->method('_normalizeString')->willReturnArgument(0);
         $mock->method('executeSql')->willReturnCallback(
-            function($sql) use ($driver) {
+            function ($sql) use ($driver) {
                 if ($driver !== null) {
                     $driver->execute($sql);
                 }
@@ -184,11 +184,11 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
      */
     public function testCanContinueUp()
     {
-        $subject     = $this->createInstance();
-        $reflect     = $this->reflect($subject);
+        $subject = $this->createInstance();
+        $reflect = $this->reflect($subject);
         $currVersion = rand(1, 5);
-        $upVersion   = rand(6, 10);
-        $increment   = 1;
+        $upVersion = rand(6, 10);
+        $increment = 1;
 
         $this->assertTrue($reflect->canContinue($currVersion, $upVersion, $increment));
     }
@@ -201,11 +201,11 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
      */
     public function testCanContinueUpFail()
     {
-        $subject     = $this->createInstance();
-        $reflect     = $this->reflect($subject);
+        $subject = $this->createInstance();
+        $reflect = $this->reflect($subject);
         $currVersion = rand(6, 10);
-        $upVersion   = rand(1, 5);
-        $increment   = 1;
+        $upVersion = rand(1, 5);
+        $increment = 1;
 
         $this->assertFalse($reflect->canContinue($currVersion, $upVersion, $increment));
     }
@@ -218,11 +218,11 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
      */
     public function testCanContinueUpEqual()
     {
-        $subject     = $this->createInstance();
-        $reflect     = $this->reflect($subject);
+        $subject = $this->createInstance();
+        $reflect = $this->reflect($subject);
         $currVersion = rand(1, 10);
-        $upVersion   = $currVersion;
-        $increment   = 1;
+        $upVersion = $currVersion;
+        $increment = 1;
 
         $this->assertFalse($reflect->canContinue($currVersion, $upVersion, $increment));
     }
@@ -235,11 +235,11 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
      */
     public function testCanContinueUpNull()
     {
-        $subject     = $this->createInstance();
-        $reflect     = $this->reflect($subject);
+        $subject = $this->createInstance();
+        $reflect = $this->reflect($subject);
         $currVersion = rand(1, 10);
-        $upVersion   = null;
-        $increment   = 1;
+        $upVersion = null;
+        $increment = 1;
 
         $this->assertTrue($reflect->canContinue($currVersion, $upVersion, $increment));
     }
@@ -252,11 +252,11 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
      */
     public function testCanContinueDown()
     {
-        $subject     = $this->createInstance();
-        $reflect     = $this->reflect($subject);
+        $subject = $this->createInstance();
+        $reflect = $this->reflect($subject);
         $currVersion = rand(6, 10);
-        $upVersion   = rand(1, 5);
-        $increment   = - 1;
+        $upVersion = rand(1, 5);
+        $increment = -1;
 
         $this->assertTrue($reflect->canContinue($currVersion, $upVersion, $increment));
     }
@@ -269,11 +269,11 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
      */
     public function testCanContinueDownFail()
     {
-        $subject     = $this->createInstance();
-        $reflect     = $this->reflect($subject);
+        $subject = $this->createInstance();
+        $reflect = $this->reflect($subject);
         $currVersion = rand(1, 5);
-        $upVersion   = rand(6, 10);
-        $increment   = - 1;
+        $upVersion = rand(6, 10);
+        $increment = -1;
 
         $this->assertFalse($reflect->canContinue($currVersion, $upVersion, $increment));
     }
@@ -286,11 +286,11 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
      */
     public function testCanContinueDownEqual()
     {
-        $subject     = $this->createInstance();
-        $reflect     = $this->reflect($subject);
+        $subject = $this->createInstance();
+        $reflect = $this->reflect($subject);
         $currVersion = rand(1, 10);
-        $upVersion   = $currVersion;
-        $increment   = - 1;
+        $upVersion = $currVersion;
+        $increment = -1;
 
         $this->assertFalse($reflect->canContinue($currVersion, $upVersion, $increment));
     }
@@ -303,11 +303,11 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
      */
     public function testCanContinueDownNull()
     {
-        $subject     = $this->createInstance();
-        $reflect     = $this->reflect($subject);
+        $subject = $this->createInstance();
+        $reflect = $this->reflect($subject);
         $currVersion = rand(1, 10);
-        $upVersion   = null;
-        $increment   = - 1;
+        $upVersion = null;
+        $increment = -1;
 
         $this->assertTrue($reflect->canContinue($currVersion, $upVersion, $increment));
     }
@@ -319,16 +319,16 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
      */
     public function testGetMatchingFiles()
     {
-        $subject    = $this->createInstance();
-        $reflect    = $this->reflect($subject);
-        $pattern    = '/foo[0-9]/'; // match all "foo" with a number
+        $subject = $this->createInstance();
+        $reflect = $this->reflect($subject);
+        $pattern = '/foo[0-9]/'; // match all "foo" with a number
         $fileSystem = $this->createFileSystem(
             [
-                $f1 = uniqid('foo-')  => '',
+                $f1 = uniqid('foo-') => '',
                 $f2 = uniqid('foo1-') => '',
                 $f3 = uniqid('foo8-') => '',
-                $f4 = uniqid('bar-')  => '',
-                $f5 = uniqid('baz-')  => '',
+                $f4 = uniqid('bar-') => '',
+                $f5 = uniqid('baz-') => '',
             ]
         );
 
@@ -336,12 +336,12 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
 
         $this->assertCount(2, $files, 'Expected number of matched files is incorrect.');
         $this->assertContains(
-            $fileSystem->url() . DIRECTORY_SEPARATOR . $f2,
+            $fileSystem->url().DIRECTORY_SEPARATOR.$f2,
             $files,
             'Match files do not contain expected file.'
         );
         $this->assertContains(
-            $fileSystem->url() . DIRECTORY_SEPARATOR . $f3,
+            $fileSystem->url().DIRECTORY_SEPARATOR.$f3,
             $files,
             'Match files do not contain expected file.'
         );
@@ -354,16 +354,16 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
      */
     public function testGetMigrationFilesUp()
     {
-        $subject    = $this->createInstance();
-        $reflect    = $this->reflect($subject);
-        $version    = 2;
-        $increment  = 1;
-        $direction  = 'up';
-        $structure  = [
+        $subject = $this->createInstance();
+        $reflect = $this->reflect($subject);
+        $version = 2;
+        $increment = 1;
+        $direction = 'up';
+        $structure = [
             'migrations' => [
-                'up-1.sql'   => uniqid('up-1-'),
-                'up-2.sql'   => uniqid('up-2-'),
-                'up-3.sql'   => uniqid('up-3-'),
+                'up-1.sql' => uniqid('up-1-'),
+                'up-2.sql' => uniqid('up-2-'),
+                'up-3.sql' => uniqid('up-3-'),
                 'down-1.sql' => uniqid('down-1-'),
                 'down-2.sql' => uniqid('down-2-'),
                 'down-3.sql' => uniqid('down-3-'),
@@ -375,7 +375,7 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
                 ->with($direction)
                 ->willReturn(
                     [
-                        $fileSystem->url() . '/migrations' => '/^up-%d\.sql$/',
+                        $fileSystem->url().'/migrations' => '/^up-%d\.sql$/',
                     ]
                 );
 
@@ -393,16 +393,16 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
      */
     public function testGetMigrationFilesDown()
     {
-        $subject    = $this->createInstance();
-        $reflect    = $this->reflect($subject);
-        $version    = 3;
-        $increment  = - 1;
-        $direction  = 'down';
-        $structure  = [
+        $subject = $this->createInstance();
+        $reflect = $this->reflect($subject);
+        $version = 3;
+        $increment = -1;
+        $direction = 'down';
+        $structure = [
             'migrations' => [
-                'up-1.sql'   => uniqid('up-1-'),
-                'up-2.sql'   => uniqid('up-2-'),
-                'up-3.sql'   => uniqid('up-3-'),
+                'up-1.sql' => uniqid('up-1-'),
+                'up-2.sql' => uniqid('up-2-'),
+                'up-3.sql' => uniqid('up-3-'),
                 'down-1.sql' => uniqid('down-1-'),
                 'down-2.sql' => uniqid('down-2-'),
                 'down-3.sql' => uniqid('down-3-'),
@@ -414,7 +414,7 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
                 ->with($direction)
                 ->willReturn(
                     [
-                        $fileSystem->url() . '/migrations' => '/^down-%d\.sql$/',
+                        $fileSystem->url().'/migrations' => '/^down-%d\.sql$/',
                     ]
                 );
 
@@ -434,7 +434,7 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
     {
         $subject = $this->createInstance(['_getMigrationFiles']);
         $reflect = $this->reflect($subject);
-        $file    = uniqid('file-');
+        $file = uniqid('file-');
 
         $subject->method('_getMigrationFiles')
                 ->willReturn([$file]);
@@ -457,8 +457,8 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
     {
         $subject = $this->createInstance(['_getMigrationFiles']);
         $reflect = $this->reflect($subject);
-        $file1   = uniqid('file-');
-        $file2   = uniqid('file-');
+        $file1 = uniqid('file-');
+        $file2 = uniqid('file-');
 
         $subject->method('_getMigrationFiles')
                 ->willReturn([$file1, $file2]);
@@ -493,8 +493,8 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
      */
     public function testGetMigrationSqlQuery()
     {
-        $subject    = $this->createInstance(['getMigrationSql']);
-        $reflect    = $this->reflect($subject);
+        $subject = $this->createInstance(['getMigrationSql']);
+        $reflect = $this->reflect($subject);
         $fileSystem = $this->createFileSystem(
             [
                 'sql' => [
@@ -503,7 +503,7 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
             ]
         );
 
-        $subject->method('getMigrationSql')->willReturn($fileSystem->url() . '/sql/file.sql');
+        $subject->method('getMigrationSql')->willReturn($fileSystem->url().'/sql/file.sql');
 
         $result = $reflect->_getMigrationSqlQuery(null, null);
 
@@ -517,13 +517,13 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
      */
     public function testReset()
     {
-        $driver   = new PdoSqliteDriverStub($this->_getPdo(), static::DB_NAME);
+        $driver = new PdoSqliteDriverStub($this->_getPdo(), static::DB_NAME);
         $database = $this->createDatabase($driver);
-        $subject  = $this->createInstance([], $database);
-        $reflect  = $this->reflect($subject);
+        $subject = $this->createInstance([], $database);
+        $reflect = $this->reflect($subject);
         $expected = [
             static::VERSION_COL => 0,
-            static::STATUS_COL  => AbstractDatabase::STATUS_COMPLETE,
+            static::STATUS_COL => AbstractDatabase::STATUS_COMPLETE,
         ];
 
         $reflect->_reset();
@@ -538,13 +538,13 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
      */
     public function testMigrateUp()
     {
-        $driver   = new PdoSqliteDriverStub($this->_getPdo(), static::DB_NAME);
+        $driver = new PdoSqliteDriverStub($this->_getPdo(), static::DB_NAME);
         $database = $this->createDatabase($driver);
-        $subject  = $this->createInstance(['_getMigrationFilePatterns'], $database);
-        $reflect  = $this->reflect($subject);
+        $subject = $this->createInstance(['_getMigrationFilePatterns'], $database);
+        $reflect = $this->reflect($subject);
 
-        $mTable     = 'test_table';
-        $mTableCol  = 'id';
+        $mTable = 'test_table';
+        $mTableCol = 'id';
         $fileSystem = $this->createFileSystem(
             [
                 'sql' => [
@@ -558,19 +558,19 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
         $subject->method('_getMigrationFilePatterns')
                 ->willReturn(
                     [
-                        $fileSystem->url() . '/sql/up/' => '/^%d\.sql$/',
+                        $fileSystem->url().'/sql/up/' => '/^%d\.sql$/',
                     ]
                 );
 
         $expected = [
             static::VERSION_COL => 1,
-            static::STATUS_COL  => AbstractDatabase::STATUS_COMPLETE,
+            static::STATUS_COL => AbstractDatabase::STATUS_COMPLETE,
         ];
 
         $reflect->_reset();
         $reflect->_up();
 
-        $tables  = $this->getConnection()->getMetaData()->getTableNames();
+        $tables = $this->getConnection()->getMetaData()->getTableNames();
         $columns = $this->getConnection()->getMetaData()->getTableColumns($mTable);
 
         $this->assertEquals($expected, $reflect->getCurrentVersion(), 'Incorrect database migration version.');
@@ -585,17 +585,17 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
      */
     public function testMigrateUpMultiple()
     {
-        $driver   = new PdoSqliteDriverStub($this->_getPdo(), static::DB_NAME);
+        $driver = new PdoSqliteDriverStub($this->_getPdo(), static::DB_NAME);
         $database = $this->createDatabase($driver);
-        $subject  = $this->createInstance(['_getMigrationFilePatterns'], $database);
-        $reflect  = $this->reflect($subject);
+        $subject = $this->createInstance(['_getMigrationFilePatterns'], $database);
+        $reflect = $this->reflect($subject);
 
-        $mTable      = 'test_table';
+        $mTable = 'test_table';
         $mTable1Col1 = 'id';
         $mTable1Col2 = 'name';
-        $mTable2     = 'test_table2';
+        $mTable2 = 'test_table2';
         $mTable2Col1 = 'id';
-        $fileSystem  = $this->createFileSystem(
+        $fileSystem = $this->createFileSystem(
             [
                 'sql' => [
                     'up' => [
@@ -610,19 +610,19 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
         $subject->method('_getMigrationFilePatterns')
                 ->willReturn(
                     [
-                        $fileSystem->url() . '/sql/up/' => '/^%d\.sql$/',
+                        $fileSystem->url().'/sql/up/' => '/^%d\.sql$/',
                     ]
                 );
 
         $expected = [
             static::VERSION_COL => 3,
-            static::STATUS_COL  => AbstractDatabase::STATUS_COMPLETE,
+            static::STATUS_COL => AbstractDatabase::STATUS_COMPLETE,
         ];
 
         $reflect->_reset();
         $reflect->_up();
 
-        $tables   = $this->getConnection()->getMetaData()->getTableNames();
+        $tables = $this->getConnection()->getMetaData()->getTableNames();
         $columns1 = $this->getConnection()->getMetaData()->getTableColumns($mTable);
         $columns2 = $this->getConnection()->getMetaData()->getTableColumns($mTable2);
 
@@ -646,17 +646,17 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
      */
     public function testMigrateUpSpecific()
     {
-        $driver   = new PdoSqliteDriverStub($this->_getPdo(), static::DB_NAME);
+        $driver = new PdoSqliteDriverStub($this->_getPdo(), static::DB_NAME);
         $database = $this->createDatabase($driver);
-        $subject  = $this->createInstance(['_getMigrationFilePatterns'], $database);
-        $reflect  = $this->reflect($subject);
+        $subject = $this->createInstance(['_getMigrationFilePatterns'], $database);
+        $reflect = $this->reflect($subject);
 
-        $mTable      = 'test_table';
+        $mTable = 'test_table';
         $mTable1Col1 = 'id';
         $mTable1Col2 = 'name';
-        $mTable2     = 'test_table2';
+        $mTable2 = 'test_table2';
         $mTable2Col1 = 'id';
-        $fileSystem  = $this->createFileSystem(
+        $fileSystem = $this->createFileSystem(
             [
                 'sql' => [
                     'up' => [
@@ -671,19 +671,19 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
         $subject->method('_getMigrationFilePatterns')
                 ->willReturn(
                     [
-                        $fileSystem->url() . '/sql/up/' => '/^%d\.sql$/',
+                        $fileSystem->url().'/sql/up/' => '/^%d\.sql$/',
                     ]
                 );
 
         $expected = [
             static::VERSION_COL => 2,
-            static::STATUS_COL  => AbstractDatabase::STATUS_COMPLETE,
+            static::STATUS_COL => AbstractDatabase::STATUS_COMPLETE,
         ];
 
         $reflect->_reset();
         $reflect->_up(2);
 
-        $tables   = $this->getConnection()->getMetaData()->getTableNames();
+        $tables = $this->getConnection()->getMetaData()->getTableNames();
         $columns1 = $this->getConnection()->getMetaData()->getTableColumns($mTable);
         $columns2 = $this->getConnection()->getMetaData()->getTableColumns($mTable2);
 
@@ -706,10 +706,10 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
      */
     public function testMigrateDown()
     {
-        $driver   = new PdoSqliteDriverStub($this->_getPdo(), static::DB_NAME);
+        $driver = new PdoSqliteDriverStub($this->_getPdo(), static::DB_NAME);
         $database = $this->createDatabase($driver);
-        $subject  = $this->createInstance(['_getMigrationFilePatterns'], $database);
-        $reflect  = $this->reflect($subject);
+        $subject = $this->createInstance(['_getMigrationFilePatterns'], $database);
+        $reflect = $this->reflect($subject);
 
         $mTable1 = 'test_table';
         $mTable2 = 'test_table2';
@@ -718,7 +718,7 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
         $fileSystem = $this->createFileSystem(
             [
                 'sql' => [
-                    'up'   => [
+                    'up' => [
                         '1.sql' => sprintf('CREATE TABLE IF NOT EXISTS %1$s (id int)', $mTable1),
                         '2.sql' => sprintf('CREATE TABLE IF NOT EXISTS %1$s (id int)', $mTable2),
                         '3.sql' => sprintf('CREATE TABLE IF NOT EXISTS %1$s (id int)', $mTable3),
@@ -734,7 +734,7 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
 
         $subject->method('_getMigrationFilePatterns')
                 ->willReturnCallback(
-                    function($direction) use ($fileSystem) {
+                    function ($direction) use ($fileSystem) {
                         return [
                             sprintf('%1$s/sql/%2$s/', $fileSystem->url(), $direction) => '/^%d\.sql$/',
                         ];
@@ -743,7 +743,7 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
 
         $expected = [
             static::VERSION_COL => 0,
-            static::STATUS_COL  => AbstractDatabase::STATUS_COMPLETE,
+            static::STATUS_COL => AbstractDatabase::STATUS_COMPLETE,
         ];
 
         $reflect->_reset();
@@ -778,10 +778,10 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
      */
     public function testMigrateDownSpecific()
     {
-        $driver   = new PdoSqliteDriverStub($this->_getPdo(), static::DB_NAME);
+        $driver = new PdoSqliteDriverStub($this->_getPdo(), static::DB_NAME);
         $database = $this->createDatabase($driver);
-        $subject  = $this->createInstance(['_getMigrationFilePatterns'], $database);
-        $reflect  = $this->reflect($subject);
+        $subject = $this->createInstance(['_getMigrationFilePatterns'], $database);
+        $reflect = $this->reflect($subject);
 
         $mTable1 = 'test_table';
         $mTable2 = 'test_table2';
@@ -790,7 +790,7 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
         $fileSystem = $this->createFileSystem(
             [
                 'sql' => [
-                    'up'   => [
+                    'up' => [
                         '1.sql' => sprintf('CREATE TABLE IF NOT EXISTS %1$s (id int)', $mTable1),
                         '2.sql' => sprintf('CREATE TABLE IF NOT EXISTS %1$s (id int)', $mTable2),
                         '3.sql' => sprintf('CREATE TABLE IF NOT EXISTS %1$s (id int)', $mTable3),
@@ -806,7 +806,7 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
 
         $subject->method('_getMigrationFilePatterns')
                 ->willReturnCallback(
-                    function($direction) use ($fileSystem) {
+                    function ($direction) use ($fileSystem) {
                         return [
                             sprintf('%1$s/sql/%2$s/', $fileSystem->url(), $direction) => '/^%d\.sql$/',
                         ];
@@ -815,7 +815,7 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
 
         $expected = [
             static::VERSION_COL => 2,
-            static::STATUS_COL  => AbstractDatabase::STATUS_COMPLETE,
+            static::STATUS_COL => AbstractDatabase::STATUS_COMPLETE,
         ];
 
         $reflect->_reset();

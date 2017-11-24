@@ -8,7 +8,6 @@ use PHPUnit_Framework_MockObject_MockObject;
 use RebelCode\Migrations\AbstractDatabase as TestSubject;
 use RebelCode\Migrations\TestStub\BaseDatabaseTestCase;
 use RebelCode\Migrations\TestStub\PdoSqliteDriverStub;
-use function uniqid;
 
 /**
  * Tests {@see TestSubject}.
@@ -27,7 +26,7 @@ class AbstractDatabaseTest extends BaseDatabaseTestCase
         return [
             'migration_log' => [
                 'version' => ['type' => 'integer'],
-                'status'  => ['type' => 'text'],
+                'status' => ['type' => 'text'],
             ],
         ];
     }
@@ -78,7 +77,7 @@ class AbstractDatabaseTest extends BaseDatabaseTestCase
 
         $mock->method('getDbDriver')->willReturn($driver);
         $mock->method('_normalizeString')->willReturnCallback(
-            function($str) {
+            function ($str) {
                 return (string) $str;
             }
         );
@@ -117,7 +116,7 @@ class AbstractDatabaseTest extends BaseDatabaseTestCase
         $subject->method('_getLogTableVersionColumn')->willReturn($version = uniqid('version-'));
         $subject->method('_getLogTableStatusColumn')->willReturn($status = uniqid('status-'));
 
-        $in  = sprintf(
+        $in = sprintf(
             'DB %1$s TABLE %2$s VERSION %3$s STATUS %4$s',
             TestSubject::PLACEHOLDER_DATABASE,
             TestSubject::PLACEHOLDER_LOG_TABLE,
@@ -152,7 +151,7 @@ class AbstractDatabaseTest extends BaseDatabaseTestCase
         $subject->method('_getLogTableVersionColumn')->willReturn($version = uniqid('version-'));
         $subject->method('_getLogTableStatusColumn')->willReturn($status = uniqid('status-'));
 
-        $in  = 'DB %1$s TABLE %2$s VERSION %3$s STATUS %4$s';
+        $in = 'DB %1$s TABLE %2$s VERSION %3$s STATUS %4$s';
         $out = $reflect->_formatSql(
             $in,
             [
@@ -180,7 +179,7 @@ class AbstractDatabaseTest extends BaseDatabaseTestCase
      */
     public function testGetVersionUnversioned()
     {
-        $driver  = new PdoSqliteDriverStub($this->_getPdo(), 'migrations');
+        $driver = new PdoSqliteDriverStub($this->_getPdo(), 'migrations');
         $subject = $this->createInstance([], $driver);
 
         $this->setExpectedException(DatabaseNotVersionedException::class);
@@ -195,9 +194,9 @@ class AbstractDatabaseTest extends BaseDatabaseTestCase
      */
     public function testCheckGetVersion()
     {
-        $dbName  = 'migrations';
-        $table   = 'migration_log';
-        $driver  = new PdoSqliteDriverStub($this->_getPdo(), $dbName);
+        $dbName = 'migrations';
+        $table = 'migration_log';
+        $driver = new PdoSqliteDriverStub($this->_getPdo(), $dbName);
         $subject = $this->createInstance([], $driver);
         $reflect = $this->reflect($subject);
 
@@ -212,7 +211,7 @@ class AbstractDatabaseTest extends BaseDatabaseTestCase
         $this->assertEquals(
             [
                 'version' => 0,
-                'status'  => TestSubject::STATUS_UNKNOWN,
+                'status' => TestSubject::STATUS_UNKNOWN,
             ],
             $subject->getVersion(),
             'Retrieved version info is incorrect.'
@@ -226,9 +225,9 @@ class AbstractDatabaseTest extends BaseDatabaseTestCase
      */
     public function testGetSetVersion()
     {
-        $dbName  = 'migrations';
-        $table   = 'migration_log';
-        $driver  = new PdoSqliteDriverStub($this->_getPdo(), $dbName);
+        $dbName = 'migrations';
+        $table = 'migration_log';
+        $driver = new PdoSqliteDriverStub($this->_getPdo(), $dbName);
         $subject = $this->createInstance([], $driver);
         $reflect = $this->reflect($subject);
 
@@ -244,7 +243,7 @@ class AbstractDatabaseTest extends BaseDatabaseTestCase
         $this->assertEquals(
             [
                 'version' => $version,
-                'status'  => $status,
+                'status' => $status,
             ],
             $subject->getVersion(),
             'Set and retrieved version info do not match.'
@@ -258,9 +257,9 @@ class AbstractDatabaseTest extends BaseDatabaseTestCase
      */
     public function testGetSetUpdateVersion()
     {
-        $dbName  = 'migrations';
-        $table   = 'migration_log';
-        $driver  = new PdoSqliteDriverStub($this->_getPdo(), $dbName);
+        $dbName = 'migrations';
+        $table = 'migration_log';
+        $driver = new PdoSqliteDriverStub($this->_getPdo(), $dbName);
         $subject = $this->createInstance([], $driver);
         $reflect = $this->reflect($subject);
 
@@ -277,7 +276,7 @@ class AbstractDatabaseTest extends BaseDatabaseTestCase
         $this->assertEquals(
             [
                 'version' => $version,
-                'status'  => TestSubject::STATUS_UNKNOWN,
+                'status' => TestSubject::STATUS_UNKNOWN,
             ],
             $subject->getVersion(),
             'Set and retrieved version info do not match.'
