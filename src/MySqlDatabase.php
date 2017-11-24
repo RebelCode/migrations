@@ -9,6 +9,7 @@ use Dhii\Exception\CreateInvalidArgumentExceptionCapableTrait;
 use Dhii\I18n\StringTranslatingTrait;
 use Dhii\Util\Normalization\NormalizeStringCapableTrait;
 use Dhii\Util\String\StringableInterface as Stringable;
+use Psr\Http\Message\UriInterface;
 
 /**
  * A MySql database adapter implementation with customizable log table name and column names.
@@ -248,11 +249,11 @@ class MySqlDatabase extends AbstractDatabase
      *
      * @since [*next-version*]
      *
-     * @param Uri $uri The URI.
+     * @param UriInterface $uri The URI.
      *
      * @return string The extracted name of the database.
      */
-    public static function getDatabaseNameFromUri(Uri $uri)
+    public static function getDatabaseNameFromUri(UriInterface $uri)
     {
         return preg_replace('~^/~', '', $uri->getPath());
     }
