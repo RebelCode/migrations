@@ -110,7 +110,6 @@ abstract class AbstractMigrator extends ByjgMigration
      * Executes a migration.
      *
      * Overridden to:
-     * - pass different arguments to the callback progress function
      * - allow preparation of SQL query strings before execution
      * - contain a portion of the fix for the SQL file execution bug See {@link getMigrationSqlQuery()}.
      * - throw specific exceptions
@@ -133,8 +132,7 @@ abstract class AbstractMigrator extends ByjgMigration
         }
 
         while (
-            $this->canContinue($currentVersion, $upVersion, $increment)
-            &&
+            $this->canContinue($currentVersion, $upVersion, $increment) &&
             $rawSql = $this->_getMigrationSqlQuery($currentVersion, $increment)
         ) {
             $nextVersion = $currentVersion + $increment;

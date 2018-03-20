@@ -3,7 +3,6 @@
 namespace RebelCode\Migrations\UnitTest;
 
 use ByJG\AnyDataset\DbDriverInterface;
-use ByJG\DbMigration\Exception\DatabaseNotVersionedException;
 use PHPUnit_Framework_MockObject_MockObject;
 use RebelCode\Migrations\AbstractDatabase as TestSubject;
 use RebelCode\Migrations\TestStub\BaseDatabaseTestCase;
@@ -16,6 +15,13 @@ use RebelCode\Migrations\TestStub\PdoSqliteDriverStub;
  */
 class AbstractDatabaseTest extends BaseDatabaseTestCase
 {
+    /**
+     * The class name of the test subject.
+     *
+     * @since [*next-version*]
+     */
+    const TEST_SUBJECT_CLASSNAME = 'RebelCode\Migrations\AbstractDatabase';
+
     /**
      * {@inheritdoc}
      *
@@ -57,7 +63,7 @@ class AbstractDatabaseTest extends BaseDatabaseTestCase
      */
     public function createInstance(array $methods = [], $driver = null)
     {
-        $builder = $this->getMockBuilder(TestSubject::class)
+        $builder = $this->getMockBuilder(static::TEST_SUBJECT_CLASSNAME)
                         ->setMethods(
                             array_merge(
                                 [
@@ -95,7 +101,7 @@ class AbstractDatabaseTest extends BaseDatabaseTestCase
         $subject = $this->createInstance();
 
         $this->assertInstanceOf(
-            TestSubject::class,
+            static::TEST_SUBJECT_CLASSNAME,
             $subject,
             'A valid instance of the test subject could not be created.'
         );
@@ -182,7 +188,7 @@ class AbstractDatabaseTest extends BaseDatabaseTestCase
         $driver = new PdoSqliteDriverStub($this->_getPdo(), 'migrations');
         $subject = $this->createInstance([], $driver);
 
-        $this->setExpectedException(DatabaseNotVersionedException::class);
+        $this->setExpectedException('ByJG\DbMigration\Exception\DatabaseNotVersionedException');
 
         $subject->getVersion();
     }

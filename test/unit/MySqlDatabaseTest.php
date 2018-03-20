@@ -15,6 +15,13 @@ use RebelCode\Migrations\TestStub\PdoSqliteDriverStub;
 class MySqlDatabaseTest extends BaseDatabaseTestCase
 {
     /**
+     * The class name of the test subject.
+     *
+     * @since [*next-version*]
+     */
+    const TEST_SUBJECT_CLASSNAME = 'RebelCode\Migrations\MySqlDatabase';
+
+    /**
      * {@inheritdoc}
      *
      * @since [*next-version*]
@@ -54,13 +61,13 @@ class MySqlDatabaseTest extends BaseDatabaseTestCase
         $subject = new TestSubject($driver, 'log');
 
         $this->assertInstanceOf(
-            TestSubject::class,
+            static::TEST_SUBJECT_CLASSNAME,
             $subject,
             'A valid instance of the test subject could not be created.'
         );
 
         $this->assertInstanceOf(
-            AbstractDatabase::class,
+            'RebelCode\Migrations\AbstractDatabase',
             $subject,
             'Test subject does not extend parent abstract class.'
         );

@@ -9,7 +9,6 @@ use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit_Framework_MockObject_MockObject;
 use RebelCode\Migrations\AbstractDatabase;
-use RebelCode\Migrations\AbstractMigrator;
 use RebelCode\Migrations\TestStub\BaseDatabaseTestCase;
 use RebelCode\Migrations\TestStub\PdoSqliteDriverStub;
 
@@ -20,6 +19,13 @@ use RebelCode\Migrations\TestStub\PdoSqliteDriverStub;
  */
 class AbstractMigratorTest extends BaseDatabaseTestCase
 {
+    /**
+     * The class name of the test subject.
+     *
+     * @since [*next-version*]
+     */
+    const TEST_SUBJECT_CLASSNAME = 'RebelCode\Migrations\AbstractMigrator';
+
     /**
      * The name of the mocked database.
      *
@@ -85,7 +91,7 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
      */
     public function createInstance(array $mockMethods = [], $database = null)
     {
-        $mock = $this->getMockBuilder(AbstractMigrator::class)
+        $mock = $this->getMockBuilder(static::TEST_SUBJECT_CLASSNAME)
                      ->setMethods(
                          array_merge(
                              $mockMethods,
@@ -128,7 +134,7 @@ class AbstractMigratorTest extends BaseDatabaseTestCase
      */
     public function createDatabase($driver = null)
     {
-        $builder = $this->getMockBuilder(AbstractDatabase::class)
+        $builder = $this->getMockBuilder('RebelCode\Migrations\AbstractDatabase')
                         ->setMethods(
                             [
                                 'getDbDriver',

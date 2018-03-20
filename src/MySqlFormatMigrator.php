@@ -24,20 +24,6 @@ use RebelCode\Migrations\Exception\MigratorExceptionInterface;
 class MySqlFormatMigrator extends AbstractMigrator implements MigratorInterface
 {
     /*
-     * Provides capability for creating invalid argument exceptions.
-     *
-     * @since [*next-version*]
-     */
-    use CreateInvalidArgumentExceptionCapableTrait;
-
-    /*
-     * Provides string translating functionality.
-     *
-     * @since [*next-version*]
-     */
-    use StringTranslatingTrait;
-
-    /*
      * Provides integer normalization functionality.
      *
      * @since [*next-version*]
@@ -50,6 +36,20 @@ class MySqlFormatMigrator extends AbstractMigrator implements MigratorInterface
      * @since [*next-version*]
      */
     use NormalizeStringCapableTrait;
+
+    /*
+     * Provides capability for creating invalid argument exceptions.
+     *
+     * @since [*next-version*]
+     */
+    use CreateInvalidArgumentExceptionCapableTrait;
+
+    /*
+     * Provides string translating functionality.
+     *
+     * @since [*next-version*]
+     */
+    use StringTranslatingTrait;
 
     /**
      * The name of the directory inside the base directory where migration files are stored,

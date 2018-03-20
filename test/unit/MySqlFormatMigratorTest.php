@@ -2,10 +2,10 @@
 
 namespace RebelCode\Migrations\UnitTest;
 
-use ByJG\DbMigration\Database\DatabaseInterface;
 use Exception;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
+use PHPUnit_Framework_MockObject_MockObject;
 use Psr\Http\Message\UriInterface;
 use RebelCode\Migrations\Exception\CouldNotMigrateExceptionInterface;
 use RebelCode\Migrations\Exception\MigratorExceptionInterface;
@@ -50,11 +50,11 @@ class MySqlFormatMigratorTest extends TestCase
      *
      * @since [*next-version*]
      *
-     * @return DatabaseInterface
+     * @return PHPUnit_Framework_MockObject_MockObject
      */
     public function createDatabase()
     {
-        $builder = $this->getMockBuilder(DatabaseInterface::class)
+        $builder = $this->getMockBuilder('ByJG\DbMigration\Database\DatabaseInterface')
                         ->setMethods(
                             [
                                 'prepareEnvironment',
@@ -80,7 +80,7 @@ class MySqlFormatMigratorTest extends TestCase
      */
     public function createUri()
     {
-        $mock = $this->mock(UriInterface::class)
+        $mock = $this->mock('Psr\Http\Message\UriInterface')
                      ->getScheme()
                      ->getAuthority()
                      ->getUserInfo()
@@ -114,7 +114,7 @@ class MySqlFormatMigratorTest extends TestCase
         $subject = new MySqlFormatMigrator($uri, $db, $vfs->url());
 
         $this->assertInstanceOf(
-            MigratorInterface::class,
+            'RebelCode\Migrations\MigratorInterface',
             $subject,
             'A valid instance of the test subject could not be created.'
         );
@@ -170,7 +170,7 @@ class MySqlFormatMigratorTest extends TestCase
         $exception = $reflect->_createMigratorException($message, $code, $previous);
 
         $this->assertInstanceOf(
-            MigratorExceptionInterface::class,
+            'RebelCode\Migrations\Exception\MigratorExceptionInterface',
             $exception,
             'Created exception does not implement expected interface.'
         );
@@ -201,7 +201,7 @@ class MySqlFormatMigratorTest extends TestCase
         $exception = $reflect->_createCouldNotMigrateException($message, $code, $previous, $version);
 
         $this->assertInstanceOf(
-            CouldNotMigrateExceptionInterface::class,
+            'RebelCode\Migrations\Exception\CouldNotMigrateExceptionInterface',
             $exception,
             'Created exception does not implement expected interface.'
         );
