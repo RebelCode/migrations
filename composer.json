@@ -13,7 +13,7 @@
     "prefer-stable": true,
     "require": {
         "php": "^5.4 | ^7.0",
-        "byjg/migration": "^2.0",
+        "byjg/migration": "dev-master as 2.1",
         "dhii/exception-interface": "^0.1 | ^0.2",
         "dhii/exception": "0.1-alpha4",
         "dhii/i18n-helper-base": "0.1-alpha1",
@@ -45,5 +45,15 @@
         "branch-alias": {
             "dev-develop": "0.1.x-dev"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "http://github.com/RebelCode/migration"
+        },
+        {
+            "type": "vcs",
+            "url": "http://github.com/RebelCode/anydataset"
+        }
+    ]
 }
